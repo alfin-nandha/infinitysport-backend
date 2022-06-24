@@ -1,7 +1,11 @@
 package migration
 
-import "gorm.io/gorm"
+import (
+	_mUsers "project/e-comerce/features/users/data"
 
-func Migration(db *gorm.DB){
+	"gorm.io/gorm"
+)
 
+func Migration(db *gorm.DB) {
+	db.AutoMigrate(_mUsers.User{})
 }

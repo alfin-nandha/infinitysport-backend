@@ -2,26 +2,31 @@ package data
 
 import (
 	"project/e-comerce/features/auth"
-	"project/e-comerce/features/users/data"
 
 	"gorm.io/gorm"
 )
 
-type mysqlUserRepository struct{
+type mysqlAuthRepository struct {
 	db *gorm.DB
 }
 
-func NewUserRepository(conn *gorm.DB) auth.Data {
-	return &mysqlUserRepository{
+func NewAuthRepository(conn *gorm.DB) auth.Data {
+	return &mysqlAuthRepository{
 		db: conn,
 	}
 }
 
-func (repo *mysqlUserRepository)FindUser(email string) (response data.User, err error){
-	datauser := data.User{}
-	result := repo.db.Where("email = ?", email).Find(&datauser)
-	if result.Error != nil{
-		return data.User{}, result.Error
+func (repo *mysqlAuthRepository) FindUser(data auth.Core) (response []string, err error) {
+	dataUser := authCore(data)
+	resultEmail := repo.db.Where("email = ?", dataUser.Email).Find(&dataUser)
+	if resultEmail.Error != nil {
+		return []string{}, resultEmail.Error
+	} else {
+		resultPassword := repo.db.Where("password = ?", dataUser.Password).Find(&dataUser)
+		if resultPassword != nil {
+			return []string{}, resultPassword.Error
+		}
+		return resultPassword, nil
 	}
-	return datauser, err
+	return resultEmail, nil
 }
