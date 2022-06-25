@@ -670,15 +670,9 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/requestDataLogin'
-          examples:
-            Admin:
-              value:
-                email: administrator@tog.org
-                password: headon_f1
-            Customer:
-              value:
-                email: perospero@gmail.com
-                password: qwerty
+          example:
+            email: perospero@gmail.com
+            password: qwerty
         multipart/form-data:
           schema:
             $ref: '#/components/schemas/requestDataLogin'     
