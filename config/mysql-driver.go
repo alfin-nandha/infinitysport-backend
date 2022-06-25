@@ -4,18 +4,16 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/joho/godotenv"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func InitDB() *gorm.DB {
 
-	err := godotenv.Load(".env")
-	if err != nil {
-		fmt.Println("Error loading .env file")
-	}
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	fmt.Println("error loading .env file")
+	// }
 
 	config := map[string]string{
 		"DB_Username": os.Getenv("DB_USERNAME"),
