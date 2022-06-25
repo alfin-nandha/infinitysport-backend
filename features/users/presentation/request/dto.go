@@ -14,9 +14,7 @@ func ToCore(userReq User) (users.Core){
 		Name: userReq.Name,
 		Email: userReq.Email,
 		Password: userReq.Password,
-		Role: users.Role{
-			ID: userReq.Role_ID,
-		},
+	
 	}
 	return userCore
 }

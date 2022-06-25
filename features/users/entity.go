@@ -11,12 +11,6 @@ type Core struct{
 	Password 	string
 	CreatedAt 	time.Time
 	UpdatedAt 	time.Time
-	Role 		Role
-}
-
-type Role struct{
-	ID int
-	Role_name string
 }
 
 type Business interface{

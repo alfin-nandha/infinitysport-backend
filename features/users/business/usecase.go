@@ -57,9 +57,6 @@ func (uc *userUseCase) UpdateData(userReq users.Core, id int)(err error){
 	if userReq.Email != ""{
 		updateMap["email"] = &userReq.Email
 	}
-	if userReq.Role.ID != 0{
-		updateMap["role_id"] = &userReq.Role.ID
-	}
 	if userReq.Password != ""{
 		hash, err := bcrypt.GenerateFromPassword([]byte(userReq.Password), bcrypt.DefaultCost)
 		if err != nil{

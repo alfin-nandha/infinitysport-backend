@@ -10,11 +10,7 @@ type user struct{
 	Name      string    `json:"name" form:"name"`
 	Email     string    `json:"email" form:"email"`
 	CreatedAt time.Time `json:"created_at" form:"created_at"`
-	Role 	  role    `json:"role" form:"role"`
-}
 
-type role struct{
-	Role string
 }
 
 func FromCore(data users.Core) user{
@@ -23,9 +19,6 @@ func FromCore(data users.Core) user{
 		Name: data.Name,
 		Email: data.Email,
 		CreatedAt: data.CreatedAt,
-		Role: role{
-			Role: data.Role.Role_name,
-		},
 	}
 }
 

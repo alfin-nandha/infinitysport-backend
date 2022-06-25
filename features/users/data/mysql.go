@@ -19,7 +19,7 @@ func NewUserRepository(conn *gorm.DB) users.Data {
 
 func (repo *mysqlUserRepository)SelectData(data string) (response []users.Core, err error){
 	var dataUser []User
-	result := repo.db.Preload("Role").Find(&dataUser)
+	result := repo.db.Find(&dataUser)
 	if result.Error != nil{
 		return []users.Core{}, result.Error
 	}
