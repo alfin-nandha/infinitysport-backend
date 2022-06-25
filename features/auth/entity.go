@@ -14,9 +14,9 @@ type Core struct {
 }
 
 type Business interface {
-	Login(Core) (token string, Name string, err error)
+	Login(data Core) (token string, Name string, err error)
 }
 
 type Data interface {
-	FindUser(data Core) ([]string, error)
+	FindUser(param string) (Core, error)
 }
