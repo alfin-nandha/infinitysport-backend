@@ -26,7 +26,8 @@ func (uc *authUseCase) Login(data auth.Core) (string, string, error) {
 	if errCompare != nil {
 		return "", "", errCompare
 	}
-	token, err := middlewares.CreateToken(int(data.ID))
+	token, err := middlewares.CreateToken(int(response.ID))
+
 
 	return token, response.Name, err
 }

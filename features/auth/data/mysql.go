@@ -2,6 +2,7 @@ package data
 
 import (
 	"project/e-comerce/features/auth"
+
 	// "project/e-comerce/features/auth/data"
 
 	"gorm.io/gorm"
@@ -23,5 +24,6 @@ func (repo *mysqlAuthRepository) FindUser(email string) (response auth.Core, err
 	if result.Error != nil {
 		return auth.Core{}, result.Error
 	}
+	
 	return dataUser.toCore(), nil
 }

@@ -8,10 +8,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Role_id  int
-	Name     string
-	Email    string
-	Password string
+	Name string `json:"name" form:"name"`
+	Email string `json:"email" form:"email"`
+	Password string `json:"password" form:"password"`
 }
 
 //DTO
@@ -24,6 +23,7 @@ func (data *User) toCore() users.Core {
 		Password:  data.Password,
 		CreatedAt: data.CreatedAt,
 		UpdatedAt: data.UpdatedAt,
+	
 	}
 
 }
@@ -38,10 +38,10 @@ func toCoreList(data []User) []users.Core {
 
 func fromCore(core users.Core) User {
 	return User{
-		Name:     core.Name,
-		Role_id:  core.Role.ID,
-		Email:    core.Email,
+		Name: core.Name,
+		Email: core.Email,
 		Password: core.Password,
+	
 	}
 }
 

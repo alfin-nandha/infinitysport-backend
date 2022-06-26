@@ -20,7 +20,7 @@ func NewUserRepository(conn *gorm.DB) users.Data {
 func (repo *mysqlUserRepository) SelectData(limit, offset int) (response []users.Core, err error) {
 	var dataUser []User
 	result := repo.db.Find(&dataUser)
-	if result.Error != nil {
+	if result.Error != nil{
 		return []users.Core{}, result.Error
 	}
 	return toCoreList(dataUser), result.Error

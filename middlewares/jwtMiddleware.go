@@ -24,7 +24,6 @@ func CreateToken(userId int) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	return token.SignedString([]byte(config.JWT()))
-
 }
 
 func ExtractToken(e echo.Context) (int, error) {
@@ -32,6 +31,7 @@ func ExtractToken(e echo.Context) (int, error) {
 	if user.Valid {
 		claims := user.Claims.(jwt.MapClaims)
 		userId := claims["userId"].(float64)
+		fmt.Println(userId)
 		return int(userId), nil
 	}
 	return 0, fmt.Errorf("token invalid")

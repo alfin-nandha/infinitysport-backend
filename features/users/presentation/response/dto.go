@@ -10,13 +10,15 @@ type User struct {
 	Name      string    `json:"name" form:"name"`
 	Email     string    `json:"email" form:"email"`
 	CreatedAt time.Time `json:"created_at" form:"created_at"`
+
 }
 
-func FromCore(data users.Core) User {
+func FromCore(data users.Core) User{
 	return User{
-		ID:    data.ID,
-		Name:  data.Name,
+		ID: data.ID,
+		Name: data.Name,
 		Email: data.Email,
+		CreatedAt: data.CreatedAt,
 	}
 }
 
