@@ -14,7 +14,16 @@ type Product struct{
 	URL string `json:"url" form:"url"`
 	Stock int `json:"stock" form:"stock"`
 	Price int `json:"price" form:"price"`
-	UserID int `json:"userid" form:"userid"`
+	UserID int
+	User	User
+}
+
+type User struct {
+	gorm.Model
+	Name string `json:"name" form:"name"`
+	Email string `json:"email" form:"email"`
+	Password string `json:"password" form:"password"`
+	Product []Product
 }
 
 //DTO
@@ -29,6 +38,11 @@ func (data *Product) toCore() products.Core{
 		Stock: data.Stock,
 		Price: data.Price,
 		UserID: data.UserID,
+		User: products.User{
+			ID: int(data.User.ID),
+			Name: data.User.Name,
+			Email: data.User.Email,
+		},
 	}
 }
 
@@ -49,6 +63,10 @@ func fromCore(core products.Core) Product{
 		Stock: core.Stock,
 		Price: core.Price,
 		UserID: core.UserID,
+		User: User{
+			Name: core.User.Name,
+			Email: core.User.Email,
+		},
 	}
 }
 

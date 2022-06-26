@@ -31,8 +31,10 @@ func (repo *mysqlProductRepository)SelectDataByID(id int) (response products.Cor
 	dataProduct := Product{}
 	result := repo.db.Find(&dataProduct, id)
 	if result.Error != nil{
+		
 		return products.Core{}, result.Error
 	}
+	
 	return toCore(dataProduct), err
 }
 

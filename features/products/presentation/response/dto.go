@@ -1,6 +1,8 @@
 package response
 
-import "project/e-comerce/features/products"
+import (
+	"project/e-comerce/features/products"
+)
 
 type Product struct{
 	ID int `json:"id" form:"id"`

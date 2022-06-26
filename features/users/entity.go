@@ -4,7 +4,6 @@ import (
 	"time"
 )
 
-<<<<<<< HEAD
 type Core struct{
 	ID 			int
 	Name 		string
@@ -12,21 +11,6 @@ type Core struct{
 	Password 	string
 	CreatedAt 	time.Time
 	UpdatedAt 	time.Time
-=======
-type Core struct {
-	ID        int
-	Name      string
-	Email     string
-	Password  string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Role      Role
-}
-
-type Role struct {
-	ID        int
-	Role_name string
->>>>>>> 5fbbfb6f86faeeae913389ddbb41649a7c348204
 }
 
 type Business interface {

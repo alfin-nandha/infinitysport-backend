@@ -62,11 +62,7 @@ func (uc *userUseCase) UpdateData(userReq users.Core, id int) (row int, err erro
 	if userReq.Email != "" {
 		updateMap["email"] = &userReq.Email
 	}
-<<<<<<< HEAD
-	if userReq.Password != ""{
-=======
 	if userReq.Password != "" {
->>>>>>> 5fbbfb6f86faeeae913389ddbb41649a7c348204
 		hash, err := bcrypt.GenerateFromPassword([]byte(userReq.Password), bcrypt.DefaultCost)
 		if err != nil {
 			return 0, errors.New("hasing password failed")

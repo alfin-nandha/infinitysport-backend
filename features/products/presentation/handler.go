@@ -1,14 +1,14 @@
 package presentation
 
 import (
+	"bytes"
+	"context"
 	"fmt"
-	"io"
 	"net/http"
-	"os"
-	"path"
 	"project/e-comerce/features/products"
 	_request_product "project/e-comerce/features/products/presentation/request"
 	_response_product "project/e-comerce/features/products/presentation/response"
+	"project/e-comerce/helper"
 	"project/e-comerce/middlewares"
 	"strconv"
 
@@ -58,6 +58,11 @@ func (h *ProductHandler)GetDataById(c echo.Context) error{
 
 func (h *ProductHandler)InsertData(c echo.Context)error{
 	userID_token,errToken := middlewares.ExtractToken(c)
+	if userID_token == 0{
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message":"failed to get user id",
+		})
+	}
 	if errToken != nil{
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message":"failed to get user id",
@@ -83,37 +88,33 @@ func (h *ProductHandler)InsertData(c echo.Context)error{
 		})
 	}
 
-	filename := path.Base(file.Filename)
-
-	src, errOpen := file.Open()
-	fmt.Println(errOpen)
-	defer src.Close()
-
 	s3Config := &aws.Config{
 		Region : aws.String("us-east-1"),
-		Credentials: credentials.NewStaticCredentials("KeyID", "SecretKey", ""),
+		Credentials: credentials.NewStaticCredentials("AKIA3JBST3XEWGFLCPYY", "CNWNe7ZuXs9PsJwJxmAnxblCt7gAnO6qnppsVtrJ", ""),
 
 	}
 	s3Session := session.New(s3Config)
-
+	file_name := strconv.Itoa(userID_token)+"_"+product.Name+"_"+file.Filename
     uploader := s3manager.NewUploader(s3Session)
-
-	dest, errCreate := os.Create(filename)
-	if errCreate != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"error upload file",
-			
-		})
+	input := &s3manager.UploadInput{
+        Bucket:      aws.String("infinitysport"), // bucket's name
+        Key:         aws.String(file_name),        // files destination location
+        Body:        bytes.NewReader([]byte(file.Filename)),                   // content of the file
+        ContentType: aws.String("image"),                 // content type
+    }
+    output, errUploader := uploader.UploadWithContext(context.Background(), input)
+	fmt.Println(errUploader)
+	if errUploader != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helper.ResponseFailed("failed to upload image data"))
 	}
-	defer dest.Close()
-
-	if _, errio := io.Copy(dest, src); errio != nil {
-		return errio
-	}
-	fmt.Printf("File %s uploaded successfully", filename,)
+	
 
 	productCore := _request_product.ToCore(product)
 	productCore.UserID = userID_token
+	productCore.Photo = file_name
+	productCore.PhotoUrl = output.Location
+
 	err := h.productBusiness.InsertProduct(productCore)
 	if err != nil{
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{

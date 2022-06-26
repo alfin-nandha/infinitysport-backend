@@ -13,9 +13,16 @@ type Core struct{
 	Price 			int
 	Photo 			string
 	PhotoUrl		string
-	UserID			int
 	CreatedAt 	time.Time
 	UpdatedAt 	time.Time
+	UserID			int
+	User			User
+}
+
+type User struct{
+	ID int
+	Name string
+	Email string
 }
 
 type Business interface{

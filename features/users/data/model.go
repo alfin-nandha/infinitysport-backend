@@ -8,16 +8,9 @@ import (
 
 type User struct {
 	gorm.Model
-<<<<<<< HEAD
 	Name string `json:"name" form:"name"`
 	Email string `json:"email" form:"email"`
 	Password string `json:"password" form:"password"`
-=======
-	Role_id  int
-	Name     string
-	Email    string
-	Password string
->>>>>>> 5fbbfb6f86faeeae913389ddbb41649a7c348204
 }
 
 //DTO
@@ -30,10 +23,7 @@ func (data *User) toCore() users.Core {
 		Password:  data.Password,
 		CreatedAt: data.CreatedAt,
 		UpdatedAt: data.UpdatedAt,
-<<<<<<< HEAD
 	
-=======
->>>>>>> 5fbbfb6f86faeeae913389ddbb41649a7c348204
 	}
 
 }
