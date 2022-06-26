@@ -7,7 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type userUseCase struct{
+type userUseCase struct {
 	userData users.Data
 }
 
@@ -17,54 +17,66 @@ func NewUserBusiness(usrData users.Data) users.Business {
 	}
 }
 
-func (uc *userUseCase) GetAllData(param string)(response []users.Core,err error){
-	resp,errData := uc.userData.SelectData(param)
-	return resp,errData
+func (uc *userUseCase) GetAllData(limit, offset int) (response []users.Core, err error) {
+	resp, errData := uc.userData.SelectData(limit, offset)
+	return resp, errData
 }
 
-func (uc *userUseCase) GetDataById(id int)(response users.Core, err error){
+func (uc *userUseCase) GetDataById(id int) (response users.Core, err error) {
 	response, err = uc.userData.SelectDataById(id)
-	return response,err
+	return response, err
 }
 
-func (uc *userUseCase) InsertData(userRequest users.Core)(error){
-	
-	if userRequest.Name == "" || userRequest.Email == "" || userRequest.Password == ""{
-		return errors.New("all data must be filled")
-	}
+func (uc *userUseCase) InsertData(userRequest users.Core) (row int, err error) {
 
+	if userRequest.Name == "" || userRequest.Email == "" || userRequest.Password == "" {
+		return 0, errors.New("all data must be filled")
+	}
 
 	passWillBcrypt := []byte(userRequest.Password)
 	hash, err_hash := bcrypt.GenerateFromPassword(passWillBcrypt, bcrypt.DefaultCost)
 	if err_hash != nil {
-        return errors.New("hashing password failed")
-    }
+		return -2, errors.New("hashing password failed")
+	}
 	userRequest.Password = string(hash)
-	err := uc.userData.InsertData(userRequest)
-	return err
+	result, err := uc.userData.InsertData(userRequest)
+	if err != nil {
+		return -1, errors.New("failed to insert data")
+	}
+	return result, nil
 }
 
-func (uc *userUseCase) DeleteData(id int)(err error){
-	err = uc.userData.DeleteData(id)
-	return err
+func (uc *userUseCase) DeleteData(id int) (row int, err error) {
+	result, err := uc.userData.DeleteData(id)
+	if err != nil {
+		return 0, errors.New("no data user for deleted")
+	}
+	return result, nil
 }
 
-func (uc *userUseCase) UpdateData(userReq users.Core, id int)(err error){
+func (uc *userUseCase) UpdateData(userReq users.Core, id int) (row int, err error) {
 	updateMap := make(map[string]interface{})
-	if userReq.Name != ""{
+	if userReq.Name != "" {
 		updateMap["name"] = &userReq.Name
 	}
-	if userReq.Email != ""{
+	if userReq.Email != "" {
 		updateMap["email"] = &userReq.Email
 	}
+<<<<<<< HEAD
 	if userReq.Password != ""{
+=======
+	if userReq.Password != "" {
+>>>>>>> 5fbbfb6f86faeeae913389ddbb41649a7c348204
 		hash, err := bcrypt.GenerateFromPassword([]byte(userReq.Password), bcrypt.DefaultCost)
-		if err != nil{
-			return errors.New("hasing password failed")
+		if err != nil {
+			return 0, errors.New("hasing password failed")
 		}
 		updateMap["password"] = &hash
 	}
 
-	err = uc.userData.UpdateData(updateMap, id)
-	return err
+	result, err := uc.userData.UpdateData(updateMap, id)
+	if err != nil {
+		return 0, errors.New("no data user for updated")
+	}
+	return result, nil
 }

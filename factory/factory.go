@@ -16,21 +16,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type Presenter struct{
+type Presenter struct {
 	UserPresenter *_userPresentation.UserHandler
-	AuthPresenter *_authPresentation.UserHandler
+	AuthPresenter *_authPresentation.AuthHandler
 	ProductPresenter *_productPresentation.ProductHandler
 }
 
-func InitFactory(dbConn *gorm.DB) Presenter{
+func InitFactory(dbConn *gorm.DB) Presenter {
 
 	userData := _userData.NewUserRepository(dbConn)
 	userBusiness := _userBusiness.NewUserBusiness(userData)
 	userPresentation := _userPresentation.NewUserHandler(userBusiness)
 
-	authData := _authData.NewUserRepository(dbConn)
-	authBusiness := _authBusiness.NewUserBusiness(authData)
-	authPresentation := _authPresentation.NewUserHandler(authBusiness)
+	authData := _authData.NewAuthRepository(dbConn)
+	authBusiness := _authBusiness.NewAuthBusiness(authData)
+	authPresentation := _authPresentation.NewAuthHandler(authBusiness)
 
 	productData := _productData.NewProductRepository(dbConn)
 	productBusiness := _productBusiness.NewProductBusiness(productData)
