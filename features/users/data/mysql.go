@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type mysqlUserRepository struct{
+type mysqlUserRepository struct {
 	db *gorm.DB
 }
 
@@ -17,55 +17,54 @@ func NewUserRepository(conn *gorm.DB) users.Data {
 	}
 }
 
-func (repo *mysqlUserRepository)SelectData(data string) (response []users.Core, err error){
+func (repo *mysqlUserRepository) SelectData(limit, offset int) (response []users.Core, err error) {
 	var dataUser []User
-	result := repo.db.Preload("Role").Find(&dataUser)
-	if result.Error != nil{
+	result := repo.db.Find(&dataUser)
+	if result.Error != nil {
 		return []users.Core{}, result.Error
 	}
-	// fmt.Println(dataUser[6].Role.Role_name)
-	return toCoreList(dataUser),result.Error
+	return toCoreList(dataUser), result.Error
 }
 
-
-func (repo *mysqlUserRepository)SelectDataById(id int) (response users.Core, err error){
+func (repo *mysqlUserRepository) SelectDataById(id int) (response users.Core, err error) {
 	datauser := User{}
 	result := repo.db.Find(&datauser, id)
-	if result.Error != nil{
+	if result.Error != nil {
 		return users.Core{}, result.Error
 	}
 	return toCore(datauser), err
 }
 
-func (repo *mysqlUserRepository)InsertData(userData users.Core)error{
+func (repo *mysqlUserRepository) InsertData(userData users.Core) (row int, err error) {
 	userModel := fromCore(userData)
 	result := repo.db.Create(&userModel)
-	if result.Error != nil{
-		return result.Error
+	if result.Error != nil {
+		return 0, result.Error
 	}
-	if result.RowsAffected == 0{
-		return errors.New("failed insert data")
+	if result.RowsAffected == 0 {
+		return -1, errors.New("failed insert data")
 	}
-	return  nil
+	return int(result.RowsAffected), nil
 }
 
-func (repo *mysqlUserRepository)DeleteData(id int) (error){
+func (repo *mysqlUserRepository) DeleteData(id int) (row int, err error) {
 	datauser := User{}
-	err := repo.db.Delete(&datauser,id)
-	return err.Error
+	result := repo.db.Delete(&datauser, id)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return int(result.RowsAffected), nil
 }
 
-func (repo *mysqlUserRepository)UpdateData(dataReq map[string]interface{}, id int)(error){
-
+func (repo *mysqlUserRepository) UpdateData(dataReq map[string]interface{}, id int) (row int, err error) {
 	model := User{}
 	model.ID = uint(id)
 	result := repo.db.Model(model).Updates(dataReq)
-	if result.Error != nil{
-		return result.Error
+	if result.Error != nil {
+		return 0, result.Error
 	}
-	if result.RowsAffected == 0{
-		return errors.New("failed update data")
+	if result.RowsAffected == 0 {
+		return -1, errors.New("failed update data")
 	}
-	return  nil
-
+	return int(result.RowsAffected), nil
 }
