@@ -1,13 +1,21 @@
 package presentation
 
 import (
+	"fmt"
+	"io"
 	"net/http"
+	"os"
+	"path"
 	"project/e-comerce/features/products"
 	_request_product "project/e-comerce/features/products/presentation/request"
 	_response_product "project/e-comerce/features/products/presentation/response"
 	"project/e-comerce/middlewares"
 	"strconv"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/labstack/echo/v4"
 )
 
@@ -57,13 +65,53 @@ func (h *ProductHandler)InsertData(c echo.Context)error{
 	}
 	
 	product := _request_product.Product{}
-	
 	err_bind := c.Bind(&product)
 	if err_bind != nil{
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message":"failed to bind insert data",
 		})
 	}
+	
+	file,fileErr := c.FormFile("file")
+	if fileErr == http.ErrMissingFile {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message":"error missing file",
+		})
+	}else if fileErr != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message":"failed get file",
+		})
+	}
+
+	filename := path.Base(file.Filename)
+
+	src, errOpen := file.Open()
+	fmt.Println(errOpen)
+	defer src.Close()
+
+	s3Config := &aws.Config{
+		Region : aws.String("us-east-1"),
+		Credentials: credentials.NewStaticCredentials("KeyID", "SecretKey", ""),
+
+	}
+	s3Session := session.New(s3Config)
+
+    uploader := s3manager.NewUploader(s3Session)
+
+	dest, errCreate := os.Create(filename)
+	if errCreate != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message":"error upload file",
+			
+		})
+	}
+	defer dest.Close()
+
+	if _, errio := io.Copy(dest, src); errio != nil {
+		return errio
+	}
+	fmt.Printf("File %s uploaded successfully", filename,)
+
 	productCore := _request_product.ToCore(product)
 	productCore.UserID = userID_token
 	err := h.productBusiness.InsertProduct(productCore)
@@ -77,6 +125,11 @@ func (h *ProductHandler)InsertData(c echo.Context)error{
 	})
 	
 }
+
+func formFile(){
+
+}
+
 
 func (h *ProductHandler)DeleteData(c echo.Context) error{
 	id,_ := strconv.Atoi(c.Param("id"))
