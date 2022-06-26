@@ -31,12 +31,12 @@ func (uc *productUseCase) InsertProduct(productRequest products.Core)(error){
 	return err
 }
 
-func (uc *productUseCase) DeleteProductByID(id int)(err error){
-	err = uc.productData.DeleteDataByID(id)
+func (uc *productUseCase) DeleteProductByID(id int,userId int)(err error){
+	err = uc.productData.DeleteDataByID(id, userId)
 	return err
 }
 
-func (uc *productUseCase) UpdateProductByID(productReq products.Core, id int)(err error){
+func (uc *productUseCase) UpdateProductByID(productReq products.Core, id int, userId int)(err error){
 	updateMap := make(map[string]interface{})
 	if productReq.Name != ""{
 		updateMap["name"] = &productReq.Name
@@ -53,7 +53,7 @@ func (uc *productUseCase) UpdateProductByID(productReq products.Core, id int)(er
 	if productReq.PhotoUrl != ""{
 		updateMap["url"] = &productReq.PhotoUrl
 	}
-	err = uc.productData.UpdateDataByID(updateMap, id)
+	err = uc.productData.UpdateDataByID(updateMap, id, userId)
 	return err
 }
 
@@ -61,3 +61,4 @@ func (uc *productUseCase) GetProductByUserID(id_user int)(response []products.Co
 	resp,errData := uc.productData.SelectDataByUserID(id_user)
 	return resp,errData
 }
+
