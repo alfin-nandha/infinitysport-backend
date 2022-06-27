@@ -75,6 +75,7 @@ func (h *ProductHandler)InsertData(c echo.Context)error{
 	}
 	
 	file_name := strconv.Itoa(userID_token)+"_"+product.Name+"_"+file.Filename
+	
 	url, errS3 := _s3_bussiness.UploadFileToS3(c, file_name, file)
 	if errS3 != nil {
 		fmt.Println(errS3)
