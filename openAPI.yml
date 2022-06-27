@@ -3,6 +3,7 @@ info:
   title: 'Group Project 2 Alta: InfinitySport'
   version: '1.0'
   description: 'API Documentation for InfinitySport'
+  url: https://virtserver.swaggerhub.com/jok3r46/InfinitySport/1.0
   contact: 
     name:  Official
     url: https://infinitysport.site
@@ -176,7 +177,7 @@ paths:
 ####################################
 #  CART
 ####################################
-  /cart/:
+  /carts:
     post:
       tags:
       - Cart
@@ -201,7 +202,7 @@ paths:
           $ref: '#/components/responses/getcartsuccess'
         '400':
           $ref: '#/components/responses/OrderResponseFailed'
-  /cart/update/{id}:
+  /carts/{id}:
     put:
       tags:
         - Cart
@@ -230,7 +231,7 @@ paths:
 ####################################
 #  ORDER
 ####################################
-  /order:
+  /orders:
       post:
         tags:
         - Order
@@ -973,7 +974,7 @@ components:
               $ref: '#/components/examples/illegalFile'
             Size File Too Big:
               $ref: '#/components/examples/sizeFileTooBig'
-    createcartuccess:
+    createcartsuccess:
       description: Success Operation
       content:
         application/json:
@@ -1101,7 +1102,7 @@ components:
               }
             ]
             Message: Success Operation
-    Updatecartuccess:
+    Updatecartsuccess:
       description: Success Operation
       content:
         application/json:
