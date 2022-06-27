@@ -1,48 +1,34 @@
 package data
 
 import (
-	"project/e-comerce/features/users"
+	"project/e-comerce/features/auth"
 
 	"gorm.io/gorm"
 )
 
-type User struct{
+type User struct {
 	gorm.Model
-	Name string `json:"name" form:"name"`
-	Email string `json:"email" form:"email"`
-	Password string `json:"password" form:"password"`
+	Name     string
+	Email    string
+	Password string
 }
 
 //DTO
 
-func (data *User) toCore() users.Core{
-	return users.Core{
-		ID: int(data.ID),
-		Name: data.Name,
-		Email: data.Email,
-		Password: data.Password,
+func (data *User) toCore() auth.Core {
+	return auth.Core{
+		ID:        int(data.ID),
+		Name:      data.Name,
+		Email:     data.Email,
+		Password:  data.Password,
 		CreatedAt: data.CreatedAt,
 		UpdatedAt: data.UpdatedAt,
 	}
 }
 
-func toCoreList(data []User)[]users.Core{
-	result :=[]users.Core{}
-	for key := range data{
-		result = append(result, data[key].toCore())
-	}
-	return result
-}
-
-func fromCore(core users.Core) User{
+func authCore(core auth.Core) User {
 	return User{
-		Name: core.Name,
-		Email: core.Email,
+		Email:    core.Email,
 		Password: core.Password,
 	}
-}
-
-func toCore(data User)users.Core{
-
-	return data.toCore()
 }

@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"fmt"
-	_constant "project/e-comerce/config"
+	"project/e-comerce/config"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -10,11 +10,10 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-
 func JWTMiddleware() echo.MiddlewareFunc {
 	return middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: "HS256",
-		SigningKey:    []byte(_constant.SECRET_JWT),
+		SigningKey:    []byte(config.JWT()),
 	})
 }
 func CreateToken(userId int) (string, error) {
@@ -24,8 +23,7 @@ func CreateToken(userId int) (string, error) {
 	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() //Token expires after 1 hour
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte(_constant.SECRET_JWT))
-
+	return token.SignedString([]byte(config.JWT()))
 }
 
 func ExtractToken(e echo.Context) (int, error) {

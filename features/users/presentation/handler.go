@@ -3,105 +3,98 @@ package presentation
 import (
 	"net/http"
 	"project/e-comerce/features/users"
-	"project/e-comerce/features/users/presentation/request"
-	_request_user "project/e-comerce/features/users/presentation/request"
-	_response_user "project/e-comerce/features/users/presentation/response"
+	_requestUser "project/e-comerce/features/users/presentation/request"
+	_responseUser "project/e-comerce/features/users/presentation/response"
+	"project/e-comerce/helper"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
-type UserHandler struct{
+type UserHandler struct {
 	userBusiness users.Business
 }
 
-func NewUserHandler(business users.Business) *UserHandler{
+func NewUserHandler(business users.Business) *UserHandler {
 	return &UserHandler{
 		userBusiness: business,
 	}
 }
 
-func (h *UserHandler)GetAll(c echo.Context) error{
-	result, err := h.userBusiness.GetAllData("")
-	if err != nil{
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"failed to get all data",
-		})
+func (h *UserHandler) GetAll(c echo.Context) error {
+	limit := c.QueryParam("limit")
+	offset := c.QueryParam("offset")
+	limitint, _ := strconv.Atoi(limit)
+	offsetint, _ := strconv.Atoi(offset)
+	result, err := h.userBusiness.GetAllData(limitint, offsetint)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helper.ResponseFailed("failed to get all data"))
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message" : "success",
-		"data" : _response_user.FromCoreList(result),
-	})
+
+	return c.JSON(http.StatusOK,
+		helper.ResponseSuccessWithData("success", _responseUser.FromCoreList(result)))
 }
 
-func (h *UserHandler)GetDataById(c echo.Context) error{
-	id,_ := strconv.Atoi(c.Param("id"))
-	user_result, err:= h.userBusiness.GetDataById(id)
-	if err != nil{
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"failed to get data",
-		})
+func (h *UserHandler) GetDataById(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	result, err := h.userBusiness.GetDataById(id)
+	if id != result.ID {
+		return c.JSON(http.StatusBadGateway,
+			helper.ResponseFailed("no get data user"))
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message" : "success",
-		"data" : _response_user.FromCore(user_result),
-	})
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helper.ResponseFailed("failed to get data"))
+	}
+	return c.JSON(http.StatusOK,
+		helper.ResponseSuccessWithData("success", _responseUser.FromCore(result)))
 }
 
-func (h *UserHandler)InsertData(c echo.Context)error{
-	
-	user := _request_user.User{}
+func (h *UserHandler) Insert(c echo.Context) error {
+	user := _requestUser.User{}
 	err_bind := c.Bind(&user)
-	if err_bind != nil{
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"failed to bind insert data",
-		})
+	if err_bind != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helper.ResponseFailed("failed to bind insert data"))
 	}
-	userCore := request.ToCore(user)
-	err := h.userBusiness.InsertData(userCore)
-	if err != nil{
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"failed to insert data",
-		})
+	userCore := _requestUser.ToCore(user)
+	_, err := h.userBusiness.InsertData(userCore)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helper.ResponseFailed("failed to insert data"))
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message" : "success insert data",
-	})
-	
+	return c.JSON(http.StatusOK,
+		helper.ResponseSuccessNoData("success insert data"))
 }
 
-func (h *UserHandler)DeleteData(c echo.Context) error{
-	id,_ := strconv.Atoi(c.Param("id"))
-	err:= h.userBusiness.DeleteData(id)
-	if err != nil{
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"failed to delete data"+err.Error(),
-		})
+func (h *UserHandler) Delete(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	_, err := h.userBusiness.DeleteData(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helper.ResponseFailed("failed to delete data"))
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message" : "success delete data",
-	})
+	return c.JSON(http.StatusOK,
+		helper.ResponseFailed("success delete data"))
 }
 
-func (h *UserHandler)UpdateData(c echo.Context)error{
-	id,_ := strconv.Atoi(c.Param("id"))
+func (h *UserHandler) Update(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
 
-	userReq := request.User{}
+	userReq := _requestUser.User{}
 	err_bind := c.Bind(&userReq)
-	if err_bind != nil{
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"failed to bind update data",
-		})
+	if err_bind != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helper.ResponseFailed("failed to bind update data"))
 	}
 
-	userCore := request.ToCore(userReq)
-	err:= h.userBusiness.UpdateData(userCore, id)
-	if err != nil{
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"failed to insert data",
-		})
+	userCore := _requestUser.ToCore(userReq)
+	_, err := h.userBusiness.UpdateData(userCore, id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helper.ResponseFailed("failed to insert data"))
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message" : "success insert data",
-	})
+	return c.JSON(http.StatusOK,
+		helper.ResponseSuccessNoData("success update data"))
 }
