@@ -14,7 +14,7 @@ servers:
   # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/jok3r46/InfinitySport/1.0
-  - url: https://infinitysport.site
+  - url: 34.238.252.143:8000
     description: Base URL that will be used for endpoints
 tags:
   - name: Login
