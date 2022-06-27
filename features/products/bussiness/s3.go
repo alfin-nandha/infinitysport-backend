@@ -34,7 +34,7 @@ func UploadFileToS3(c echo.Context, fileName string, file *multipart.FileHeader)
         Bucket:      aws.String("infinitysport"), 		// bucket's name
         Key:         aws.String(fileName),        		// files destination location
         Body:        bytes.NewReader(fileBuffer),       // content of the file
-        ContentType: aws.String("image/jpg"),           // content type
+        ContentType: aws.String("image/png"),           // content type
     }
     output, errUploader := uploader.UploadWithContext(context.Background(), input)
 	

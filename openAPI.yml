@@ -172,7 +172,18 @@ paths:
           $ref: '#/components/responses/successOperationNonData'
         '400':
           $ref: '#/components/responses/deleteDataByIdFailed'
-
+  /user-products:
+      get:
+        tags:
+          - Products
+        summary: Get user's products
+        security:
+          - JWTAuth: []
+        responses:
+          '200':
+            $ref: '#/components/responses/getProductsByUserIdSuccess'
+          '400':
+            $ref: '#/components/responses/getDataByIdFailed'
 ####################################
 #  CART
 ####################################
@@ -294,7 +305,7 @@ components:
         - detail_product
         - price
         - stock
-        - photo
+        - file
       properties:
         name_product:
           type: string
@@ -308,7 +319,7 @@ components:
         stock:
           type: integer
           minimum: 2
-        photo:
+        file:
           type: string
           format: binary
           description: "allowed file extension: jpg, png, jpeg && size <= 1050000 byte"
@@ -319,6 +330,7 @@ components:
         - detail_product
         - price
         - stock
+        - file
       properties:
         name_product:
           type: string
@@ -332,7 +344,7 @@ components:
         stock:
           type: integer
           minimum: 2
-        photo:
+        file:
           type: string
           format: binary
           description: "allowed file extension: jpg, png, jpeg && size <= 1050000 byte"
@@ -414,33 +426,31 @@ components:
     responseProductWithData:
       type: object
       properties:
-        Code:
-          type: integer
         Data:
           type: object
           properties:
             ID:
               type: integer
-            Name_Product:
+            name:
               type: string
-            Detail_Product:
+            detail:
               type: string
-            Price:
+            price:
               type: integer
-            Stock:
+            stock:
               type: integer
-            Photo:
+            photo:
               type: string
               format: binary
-            Url: 
+            url: 
               type: string
+            userid:
+              type: int
         Message:
           type: string      
     responseProductWithDataArray:
       type: object
       properties:
-        Code:
-          type: integer
         Data:
           type: array
           items:
@@ -461,6 +471,8 @@ components:
                 format: binary
               Url: 
                 type: string
+              userid:
+                type: int
         Message:
           type: string
     responseGroupProductWithData:
@@ -912,28 +924,29 @@ components:
           schema:
             $ref: '#/components/schemas/responseProductWithDataArray'
           example:
-            Code: 200
-            Data: [
+            data: [
               { 
-                ID: 3,
-                NameProduct: Youtube-Music,
-                DetailProduct: Lorem,
-                Price: 300000,
-                Stock: 6,
-                Photo: Youtube-Music-2021-12-13T10:06:45.jpg,
-                Url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Music-2021-12-13T10:06:45.jpg
+                id: 3,
+                name: Youtube-Music,
+                detail: Lorem,
+                photo: Youtube-Music-2021-12-13T10:06:45.jpg,
+                url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Music-2021-12-13T10:06:45.jpg,
+                stock: 6,
+                price: 300000,
+                userid : 1
               },
               { 
-                ID: 4,
-                NameProduct: Youtube Premium,
-                DetailProduct: Berlangganan 1 bulan,
-                Price: 200000,
-                Stock: 4,
-                Photo: Youtube-Premium-2021-12-14T09:34:47.png,
-                Url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Premium-2021-12-14T09:34:47.png
+                id: 4,
+                name: Youtube Premium,
+                detail: Berlangganan 1 bulan,
+                photo: Youtube-Premium-2021-12-14T09:34:47.png,
+                url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Premium-2021-12-14T09:34:47.png,
+                stock: 4,
+                price: 200000,
+                userid : 2
               }
             ]
-            Message: Success Operation
+            Message: Success
     getProductSuccess:
       description: Success Response Data
       content:
@@ -941,17 +954,37 @@ components:
           schema:
             $ref: '#/components/schemas/responseProductWithData'
           example:
-            Code: 200
             Data: { 
-              ID: 3,
-                NameProduct: Youtube-Music,
-                DetailProduct: Lorem,
-                Price: 300000,
-                Stock: 6,
-                Photo: Youtube-Music-2021-12-13T10:06:45.jpg,
-                Url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Music-2021-12-13T10:06:45.jpg
+              id: 3,
+              name: Youtube-Music,
+              detail: Lorem,
+              photo: Youtube-Music-2021-12-13T10:06:45.jpg,
+              url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Music-2021-12-13T10:06:45.jpg,
+              stock: 6,
+              price: 300000,
+              userid: 1
             }
-            Message: Success Operation
+            Message: Success
+    getProductsByUserIdSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/responseProductWithData'
+          example:
+            Data: [
+              { 
+                id: 3,
+                name: Youtube-Music,
+                detail: Lorem,
+                photo: Youtube-Music-2021-12-13T10:06:45.jpg,
+                url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Music-2021-12-13T10:06:45.jpg,
+                stock: 6,
+                price: 300000,
+                userid: 1
+              }
+            ]
+            Message: Success
     updateProductFailed:
       description: Bad Request Response
       content:
