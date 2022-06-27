@@ -20,15 +20,23 @@ func UploadFileToS3(c echo.Context, fileName string, file *multipart.FileHeader)
         return "",errSession
     }
 
-
 	src, errOpen := file.Open()
     if errOpen != nil {
         return "",errOpen
     }
     defer src.Close()
 
-	fileBuffer := make([]byte, file.Size)
+	// file_bytes, errByte := ioutil.ReadFile(filepath.Base(file.Filename))
+	// if errByte != nil {
+	// 	return "", errByte
+	// }
+
 	
+
+	fileBuffer := make([]byte, file.Size)
+	// typefile := http.DetectContentType([]byte())
+	// fmt.Println(typefile) 
+
     uploader := s3manager.NewUploader(s3Session)
 	input := &s3manager.UploadInput{
         Bucket:      aws.String("infinitysport"), 		// bucket's name

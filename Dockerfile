@@ -9,6 +9,6 @@ WORKDIR /app
 # copy all files to /app
 COPY ./ /app
 
-RUN go build -o alta-api
+RUN go build -o infinitysport-api
 
-CMD ./alta-api
+CMD ./infinitysport-api
