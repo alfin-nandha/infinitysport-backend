@@ -1,21 +1,17 @@
 package presentation
 
 import (
-	"bytes"
-	"context"
 	"fmt"
 	"net/http"
 	"project/e-comerce/features/products"
+
+	_s3_bussiness "project/e-comerce/features/products/bussiness"
 	_request_product "project/e-comerce/features/products/presentation/request"
 	_response_product "project/e-comerce/features/products/presentation/response"
 	"project/e-comerce/helper"
 	"project/e-comerce/middlewares"
 	"strconv"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/labstack/echo/v4"
 )
 
@@ -58,12 +54,7 @@ func (h *ProductHandler)GetDataById(c echo.Context) error{
 
 func (h *ProductHandler)InsertData(c echo.Context)error{
 	userID_token,errToken := middlewares.ExtractToken(c)
-	if userID_token == 0{
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"failed to get user id",
-		})
-	}
-	if errToken != nil{
+	if userID_token == 0 || errToken != nil{
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message":"failed to get user id",
 		})
@@ -78,42 +69,23 @@ func (h *ProductHandler)InsertData(c echo.Context)error{
 	}
 	
 	file,fileErr := c.FormFile("file")
-	if fileErr == http.ErrMissingFile {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"error missing file",
-		})
-	}else if fileErr != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"failed get file",
-		})
-	}
-
-	s3Config := &aws.Config{
-		Region : aws.String("us-east-1"),
-		Credentials: credentials.NewStaticCredentials("AKIA3JBST3XEWGFLCPYY", "CNWNe7ZuXs9PsJwJxmAnxblCt7gAnO6qnppsVtrJ", ""),
-
-	}
-	s3Session := session.New(s3Config)
-	file_name := strconv.Itoa(userID_token)+"_"+product.Name+"_"+file.Filename
-    uploader := s3manager.NewUploader(s3Session)
-	input := &s3manager.UploadInput{
-        Bucket:      aws.String("infinitysport"), // bucket's name
-        Key:         aws.String(file_name),        // files destination location
-        Body:        bytes.NewReader([]byte(file.Filename)),                   // content of the file
-        ContentType: aws.String("image"),                 // content type
-    }
-    output, errUploader := uploader.UploadWithContext(context.Background(), input)
-	fmt.Println(errUploader)
-	if errUploader != nil {
-		return c.JSON(http.StatusInternalServerError,
-			helper.ResponseFailed("failed to upload image data"))
+	if fileErr == http.ErrMissingFile || fileErr != nil {
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get file"),
+		)
 	}
 	
+	file_name := strconv.Itoa(userID_token)+"_"+product.Name+"_"+file.Filename
+	url, errS3 := _s3_bussiness.UploadFileToS3(c, file_name, file)
+	if errS3 != nil {
+		fmt.Println(errS3)
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to upload file"),
+		)
+	}
 
 	productCore := _request_product.ToCore(product)
 	productCore.UserID = userID_token
-	productCore.Photo = file_name
-	productCore.PhotoUrl = output.Location
+	productCore.Photo = file.Filename
+	productCore.PhotoUrl = url
 
 	err := h.productBusiness.InsertProduct(productCore)
 	if err != nil{
@@ -134,7 +106,15 @@ func formFile(){
 
 func (h *ProductHandler)DeleteData(c echo.Context) error{
 	id,_ := strconv.Atoi(c.Param("id"))
-	err:= h.productBusiness.DeleteProductByID(id)
+
+	userID_token,errToken := middlewares.ExtractToken(c)
+	if userID_token == 0 || errToken != nil{
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message":"failed to get user id",
+		})
+	}
+
+	err:= h.productBusiness.DeleteProductByID(id, userID_token)
 	if err != nil{
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"message":"failed to delete data"+err.Error(),
@@ -147,7 +127,6 @@ func (h *ProductHandler)DeleteData(c echo.Context) error{
 
 func (h *ProductHandler)UpdateData(c echo.Context)error{
 	id,_ := strconv.Atoi(c.Param("id"))
-
 	productReq := _request_product.Product{}
 	err_bind := c.Bind(&productReq)
 	if err_bind != nil{
@@ -156,16 +135,20 @@ func (h *ProductHandler)UpdateData(c echo.Context)error{
 		})
 	}
 
-	productCore := _request_product.ToCore(productReq)
-	err:= h.productBusiness.UpdateProductByID(productCore, id)
-	if err != nil{
+	userID_token,errToken := middlewares.ExtractToken(c)
+	if userID_token == 0 || errToken != nil{
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
-			"message":"failed to insert data",
+			"message":"failed to get user id",
 		})
 	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message" : "success insert data",
-	})
+
+	productCore := _request_product.ToCore(productReq)
+	err:= h.productBusiness.UpdateProductByID(productCore, id, userID_token)
+	if err != nil{
+		fmt.Println(err.Error())
+		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed update data"))
+	}
+	return c.JSON(http.StatusOK, helper.ResponseSuccessNoData("sucsess update product"))
 }
 
 func (h *ProductHandler)GetProductByUser(c echo.Context) error{

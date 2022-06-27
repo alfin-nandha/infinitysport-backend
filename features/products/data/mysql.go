@@ -50,30 +50,34 @@ func (repo *mysqlProductRepository)InsertData(ProductData products.Core)error{
 	return  nil
 }
 
-func (repo *mysqlProductRepository)DeleteDataByID(id int) (error){
+func (repo *mysqlProductRepository)DeleteDataByID(id int, userId int) (error){
 	dataProduct := Product{}
-	err := repo.db.Delete(&dataProduct,id)
-	return err.Error
+	result := repo.db.Where("user_id = ?", userId).Delete(&dataProduct,id)
+	if result.RowsAffected == 0{
+		return errors.New("no rows affected")
+	}
+	return result.Error
 }
 
-func (repo *mysqlProductRepository)UpdateDataByID(dataReq map[string]interface{}, id int)(error){
+func (repo *mysqlProductRepository)UpdateDataByID(dataReq map[string]interface{}, id int, userId int)(error){
 
 	model := Product{}
 	model.ID = uint(id)
-	result := repo.db.Model(model).Updates(dataReq)
-	if result.Error != nil{
+	result := repo.db.Model(model).Where("user_id = ?", userId).Updates(dataReq)
+	if result.RowsAffected == 0{
+		return errors.New("no row affected")
+	}
+	if result != nil{
 		return result.Error
 	}
-	if result.RowsAffected == 0{
-		return errors.New("failed update data")
-	}
+	
 	return  nil
 
 }
 
 func (repo *mysqlProductRepository)SelectDataByUserID(id_user int) (response []products.Core, err error){
 	var dataProduct []Product
-	result := repo.db.Where("id_user = ?", id_user).Find(&dataProduct)
+	result := repo.db.Where("user_id = ?", id_user).Find(&dataProduct)
 	if result.Error != nil{
 		return []products.Core{}, result.Error
 	}
