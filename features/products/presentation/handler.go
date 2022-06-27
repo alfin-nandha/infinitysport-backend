@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"project/e-comerce/features/products"
+	"time"
 
-	_s3_bussiness "project/e-comerce/features/products/bussiness"
 	_request_product "project/e-comerce/features/products/presentation/request"
 	_response_product "project/e-comerce/features/products/presentation/response"
 	"project/e-comerce/helper"
@@ -68,24 +68,37 @@ func (h *ProductHandler)InsertData(c echo.Context)error{
 		})
 	}
 	
-	file,fileErr := c.FormFile("file")
+	fileData,fileInfo,fileErr := c.Request().FormFile("file")
 	if fileErr == http.ErrMissingFile || fileErr != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to get file"),
 		)
 	}
-	
-	file_name := strconv.Itoa(userID_token)+"_"+product.Name+"_"+file.Filename
-	
-	url, errS3 := _s3_bussiness.UploadFileToS3(c, file_name, file)
-	if errS3 != nil {
-		fmt.Println(errS3)
+
+	extension, err_check_extension := helper.CheckFileExtension(fileInfo.Filename)
+	if err_check_extension != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("file extension error"))
+	}
+
+	// check file size
+	err_check_size := helper.CheckFileSize(fileInfo.Size)
+	if err_check_size != nil {
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("file size error"))
+	}
+
+	// memberikan nama file
+	fileName := strconv.Itoa(userID_token) + "_" + product.Name + time.Now().Format("2006-01-02 15:04:05") + "."+extension
+
+	url, errUploadImg:= helper.UploadImageToS3(fileName, fileData)
+
+	if errUploadImg != nil {
+		fmt.Println(errUploadImg)
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to upload file"),
 		)
 	}
 
 	productCore := _request_product.ToCore(product)
 	productCore.UserID = userID_token
-	productCore.Photo = file.Filename
+	productCore.Photo = fileInfo.Filename
 	productCore.PhotoUrl = url
 
 	err := h.productBusiness.InsertProduct(productCore)
