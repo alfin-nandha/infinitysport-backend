@@ -67,18 +67,16 @@ func (h *CartHandler) Update(c echo.Context) error {
  		return c.JSON(http.StatusInternalServerError,
  			helper.ResponseFailed("failed to get user id"))
  	}
- 	cartData := _requestCart.Cart{}
- 	newData := cartData.Qty
  	
- 	errBind := c.Bind(&newData)
+ 	UserId := userID_token
+ 	cartData := _requestCart.Cart{}
+ 	errBind := c.Bind(&cartData)
 
  	if errBind != nil {
  		return errors.New("failed to bind data")
  	}
- 	cartCore := _requestCart.ToCore(newData)
- 	cartCore.UserID = userID_token
-
- 	result, err := h.cartBusiness.UpdateCart(cartCore)
+ 	
+ 	_, err := h.cartBusiness.UpdateCart(UserId, cartData.Qty)
   if err != nil {
     return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to update cart"))
   }

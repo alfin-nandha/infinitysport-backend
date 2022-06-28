@@ -53,12 +53,14 @@ func (repo *mysqlCartRepository) InsertData(cart carts.Core) (int, error) {
 	return int(result.RowsAffected), nil
 }
 
-func (repo *mysqlCartRepository) Update(qty int) (result int, err error) {
- 	Cart := fromCore(cart)
- 	result := repo.db.Model(&Cart).Updates("quantity", Cart.Qty)
+func (repo *mysqlCartRepository) Update(UserId int, ProductId int, Qty int) (result int, err error) {
+  dataCart := Cart{}
+  idCart := repo.db.Where(UserId).Find(&dataCart)
+  
+ 	result := repo.db.Model(&Cart{}, idCart).Update("quantity", Qty)
  	
- 	if result.Error != nil {
- 	  return 0, result.Error
+ 	if result.RowsAffected != 0 {
+ 	  return 0, errors.New("failed to query update")
  	}
  	return result, nil
 }
