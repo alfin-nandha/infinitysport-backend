@@ -30,7 +30,9 @@ type User struct {
 }
 
 type Business interface {
+  AddCart(data Core) (Core, error)
 }
 
 type Data interface {
+  InsertCart(data Core) (Core, error)
 }

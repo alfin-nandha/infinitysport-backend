@@ -71,6 +71,5 @@ func fromCore(core products.Core) Product{
 }
 
 func toCore(data Product)products.Core{
-
 	return data.toCore()
 }

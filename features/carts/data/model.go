@@ -36,3 +36,57 @@ type User struct {
 	Password string `json:"password" form:"password"`
 	Product  []Product
 }
+
+func (data *Cart) toCore() carts.Core {
+  return carts.Core {
+    ID: int(data.ID)
+    ProductID int 
+    UserID int 
+    Price int 
+    Qty int 
+    Product: carts.Product {
+      ID: int(data.Product.ID),
+      Name: data.Product.ID,
+      PhotoUrl: data.Product.PhotoUrl,
+      Stock: data.Product.Stock,
+      Price: data.Product.Price,
+    },
+    User: carts.User {
+      ID: int(data.User.ID),
+      Name: data.User.Name,
+      Email: data.User.Email,
+    },
+  }
+}
+
+func ToCoreList(data []Cart)[]carts.Core {
+	result :=[]carts.Core{}
+	for key := range data{
+		result = append(result, data[key].toCore())
+	}
+	return result
+}
+
+func fromCore(core carts.Core) Cart {
+  return Cart {
+    ID: core.ID,
+    ProductID: core.Product.ID,
+    UserID: core.User.ID,
+    Price: core.Product.Price,
+    Qty: core.Product.Qty,
+    Product: Product {
+      Name: core.Product.Name,
+      PhotoUrl: core.Product.PhotoUrl,
+      Stock: core.Product.Stock,
+      Price: core.Product.Price,
+    },
+    User: User {
+      Name: core.User.Name,
+      Email: core.User.Email,
+    },
+  }
+}
+
+func toCore(data Cart)carts.Core{
+	return data.toCore()
+}
