@@ -13,7 +13,6 @@ func ToCore(userReq User) users.Core {
 		Name:     userReq.Name,
 		Email:    userReq.Email,
 		Password: userReq.Password,
-	
 	}
 	return userCore
 }

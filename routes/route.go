@@ -27,8 +27,12 @@ func New(presenter factory.Presenter) *echo.Echo {
 	e.POST("/products", presenter.ProductPresenter.InsertData, middlewares.JWTMiddleware())
 	e.PUT("/products/:id", presenter.ProductPresenter.UpdateData, middlewares.JWTMiddleware())
 	e.DELETE("/products/:id", presenter.ProductPresenter.DeleteData, middlewares.JWTMiddleware())
-	
+
 	e.GET("/user-products", presenter.ProductPresenter.GetProductByUser, middlewares.JWTMiddleware())
+
+	// Cart
+	e.POST("/carts", presenter.CartPresenter.AddCart, middlewares.JWTMiddleware())
+	e.GET("/carts", presenter.CartPresenter.GetAll, middlewares.JWTMiddleware())
 
 	return e
 }

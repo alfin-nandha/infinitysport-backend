@@ -30,9 +30,14 @@ type User struct {
 }
 
 type Business interface {
-  AddCart(data Core) (Core, error)
+	AddCart(data Core) (row int, err error)
+	GetAllCart() (data []Core, err error)
+	// UpdateCart(data Core) (row int, err error)
 }
 
 type Data interface {
-  InsertCart(data Core) (Core, error)
+	CheckProductInCart(UserId int, IdProduct int) (bool, error)
+	InsertData(data Core) (row int, err error)
+	SelectData() (data []Core, err error)
+	// Update(data Core) (row int, err error)
 }
