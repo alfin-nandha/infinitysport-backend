@@ -53,7 +53,12 @@ func (repo *mysqlCartRepository) InsertData(cart carts.Core) (int, error) {
 	return int(result.RowsAffected), nil
 }
 
-// func (repo *mysqlCartRepository) Update(cart carts.Core) (int, error) {
-// 	Cart := fromCore(cart)
-// 	result := repo.db.Model(&Cart).Updates("quantity", Cart.Qty)
-// }
+func (repo *mysqlCartRepository) Update(qty int) (result int, err error) {
+ 	Cart := fromCore(cart)
+ 	result := repo.db.Model(&Cart).Updates("quantity", Cart.Qty)
+ 	
+ 	if result.Error != nil {
+ 	  return 0, result.Error
+ 	}
+ 	return result, nil
+}
