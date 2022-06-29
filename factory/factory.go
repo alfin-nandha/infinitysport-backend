@@ -16,6 +16,9 @@ import (
 	_cartBusiness "project/e-comerce/features/carts/business"
 	_cartData "project/e-comerce/features/carts/data"
 	_cartPresentation "project/e-comerce/features/carts/presentation"
+	_orderBusiness "project/e-comerce/features/orders/bussiness"
+	_orderData "project/e-comerce/features/orders/data"
+	_orderPresentation "project/e-comerce/features/orders/presentation"
 
 	"gorm.io/gorm"
 )
@@ -24,6 +27,7 @@ type Presenter struct {
 	UserPresenter    *_userPresentation.UserHandler
 	AuthPresenter    *_authPresentation.AuthHandler
 	ProductPresenter *_productPresentation.ProductHandler
+	OrderPresenter   *_orderPresentation.OrderHandler
 	CartPresenter    *_cartPresentation.CartHandler
 }
 
@@ -41,6 +45,11 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 	productBusiness := _productBusiness.NewProductBusiness(productData)
 	productPresentation := _productPresentation.NewProductHandler(productBusiness)
 
+	orderData := _orderData.NewOrderRepository(dbConn)
+	// tambah parameter cartData
+	orderBusiness := _orderBusiness.NewOrderBusiness(orderData)
+	orderPresentation := _orderPresentation.NewOrderHandler(orderBusiness)
+
 	cartData := _cartData.NewCartRepository(dbConn)
 	cartBusiness := _cartBusiness.NewCartBusiness(cartData)
 	cartPresentation := _cartPresentation.NewCartHandler(cartBusiness)
@@ -50,5 +59,6 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 		AuthPresenter:    authPresentation,
 		ProductPresenter: productPresentation,
 		CartPresenter:    cartPresentation,
+		OrderPresenter:   orderPresentation,
 	}
 }
