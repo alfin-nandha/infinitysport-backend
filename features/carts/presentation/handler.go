@@ -107,7 +107,7 @@ func (h *CartHandler) Destroy(c echo.Context) error {
 
 	result, err := h.cartBusiness.DestroyCart(UserId, idCart)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to delete cart"))
+		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error response to delete cart"))
 	}
 	if result == 0 {
 		return c.JSON(http.StatusBadRequest, helper.ResponseFailed("failed to delete cart"))

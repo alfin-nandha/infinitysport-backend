@@ -22,19 +22,24 @@ func (uc *cartUseCase) GetAllCart(UserId int) (response []carts.Core, err error)
 // return valuenya bool, idcart, qty, err
 // if not data idcart 0
 func (uc *cartUseCase) AddCart(data carts.Core) (result int, err error) {
-	resultCart, _ := uc.cartData.CheckProductInCart(data.UserID, data.ProductID)
+	resultCart, idCart, Qty, _ := uc.cartData.CheckProductInCart(data.UserID, data.ProductID)
 
-	if resultCart == false {
+	newQty := Qty + 1
+
+	if !resultCart {
 		result, _ = uc.cartData.InsertData(data)
 	} else {
-	  result, _ = uc.cartData.UpdateAddCart(data, )
+		UserId := data.UserID
+		result, _ = uc.cartData.Update(UserId, idCart, newQty)
 	}
-
 	return result, nil
 }
 
 func (uc *cartUseCase) UpdateCart(data carts.Core, idCart int) (result int, err error) {
-	result, _ = uc.cartData.Update(data, idCart)
+	UserId := data.UserID
+	newQty := data.Qty
+
+	result, _ = uc.cartData.Update(UserId, idCart, newQty)
 	return result, nil
 }
 

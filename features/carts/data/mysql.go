@@ -34,7 +34,6 @@ func (repo *mysqlCartRepository) SelectData(UserId int) ([]carts.Core, error) {
 	if result.Error != nil {
 		return []carts.Core{}, result.Error
 	}
-
 	return ToCoreList(data), nil
 }
 
@@ -50,8 +49,12 @@ func (repo *mysqlCartRepository) InsertData(cart carts.Core) (int, error) {
 	return int(result.RowsAffected), nil
 }
 
-func (repo *mysqlCartRepository) Update(cart carts.Core, idCart int) (result int, err error) {
-	tx := repo.db.Model(&Cart{}).Where("id = ?", idCart).Update("qty", cart.Qty)
+func (repo *mysqlCartRepository) Update(UserId, idCart, Qty int) (result int, err error) {
+	tx := repo.db.Model(&Cart{}).Where("user_id = ? AND id = ?", UserId, idCart).Update("qty", Qty)
+
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
 
 	if tx.RowsAffected == 0 {
 		return 0, errors.New("failed to query update")
@@ -60,7 +63,11 @@ func (repo *mysqlCartRepository) Update(cart carts.Core, idCart int) (result int
 }
 
 func (repo *mysqlCartRepository) Destroy(UserId, idCart int) (result int, err error) {
-	tx := repo.db.Where(UserId).Delete(&Cart{}, idCart)
+	tx := repo.db.Where("user_id = ?", UserId).Delete(&Cart{}, idCart)
+
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
 
 	if tx.RowsAffected == 0 {
 		return 0, errors.New("failed to query delete")
