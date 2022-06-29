@@ -94,7 +94,7 @@ func (h OrderHandler) ConfirmOrder(c echo.Context) error {
 
 	payCore := request.ToPaymentCore(payReq)
 
-	errRespon := h.orderBusiness.ConfirmOrder(payCore, userID_token, orderId)
+	errRespon := h.orderBusiness.ConfirmOrder(payCore, orderId, userID_token)
 	if errRespon != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(errRespon.Error()))
 	}

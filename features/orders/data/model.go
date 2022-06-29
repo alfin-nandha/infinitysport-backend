@@ -146,5 +146,6 @@ func fromPaymentCore(paymentCore orders.PaymentCore) Payment {
 		NumberCard:  paymentCore.NumberCard,
 		PaymentCode: paymentCore.PaymentCode,
 		PaymentName: paymentCore.PaymentName,
+		orderID:     paymentCore.OrderID,
 	}
 }
