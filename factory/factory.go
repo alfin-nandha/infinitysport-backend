@@ -42,6 +42,7 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 	productPresentation := _productPresentation.NewProductHandler(productBusiness)
 
 	orderData := _orderData.NewOrderRepository(dbConn)
+	// tambah parameter cartData
 	orderBusiness := _orderBusiness.NewOrderBusiness(orderData)
 	orderPresentation := _orderPresentation.NewOrderHandler(orderBusiness)
 

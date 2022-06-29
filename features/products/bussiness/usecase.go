@@ -4,8 +4,6 @@ import (
 	"project/e-comerce/features/products"
 )
 
-
-
 type productUseCase struct{
 	productData products.Data
 }

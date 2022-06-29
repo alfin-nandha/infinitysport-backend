@@ -7,154 +7,143 @@ import (
 	"gorm.io/gorm"
 )
 
-type Order struct{
+type Order struct {
 	gorm.Model
-	PaymentID int
-	UserID int
-	Price int
-	status string
+	UserID    int
+	Price     int
+	Status    string
 	AddressID int
-	Address Address
-	Payment Payment
+	Address   Address
 }
 
-type OrderDetail struct{
-	ID int
-	OrderID int
+type OrderDetail struct {
+	ID          int
+	OrderID     int
 	ProductName string
-	Price int
-	Qty int
+	Price       int
+	Url         string
+	Qty         int
 }
 
 type Cart struct {
 	gorm.Model
-	ProductID 	int
-	UserID    	int
-	Qty       	int 
-	Product		_mProduct.Product
+	ProductID int
+	UserID    int
+	Qty       int
+	Product   _mProduct.Product
 }
 
-
-type Address struct{
-	ID int
-	City string
-	Province string
-	PostalCode string
-	Street string
+type Address struct {
+	ID       int
+	Receiver string
+	Phone    string
+	Address  string
 }
 
-type Payment struct{
-	ID int
+type Payment struct {
+	ID          int
 	PaymentName string
-	NumberCard string
+	NumberCard  string
 	PaymentCode string
+	orderID     int
 }
 
-func (data *Order) toCore() orders.Core{
+func (data *Order) toCore() orders.Core {
 	return orders.Core{
-		ID: int(data.ID),
-		Price: data.Price,
-		UserID: data.UserID,
-		PaymentID: data.PaymentID,
+		ID:        int(data.ID),
+		Price:     data.Price,
+		Status:    data.Status,
+		UserID:    data.UserID,
+		CreatedAt: data.CreatedAt,
 		AddressID: data.AddressID,
 		Address: orders.AddressCore{
-			ID: data.Address.ID,
-			City: data.Address.City,
-			Province: data.Address.Province,
-			PostalCode: data.Address.PostalCode,
-			Street: data.Address.Street,
-		},
-		Payment: orders.PaymentCore{
-			ID: data.Payment.ID,
-			NumberCard: data.Payment.NumberCard,
-			PaymentCode: data.Payment.PaymentCode,
-			PaymentName: data.Payment.PaymentName,
+			ID:       data.Address.ID,
+			Receiver: data.Address.Receiver,
+			Phone:    data.Address.Phone,
+			Address:  data.Address.Address,
 		},
 	}
 }
 
-func ToCoreList(data []Order)[]orders.Core{
-	result :=[]orders.Core{}
-	for key := range data{
+func ToCoreList(data []Order) []orders.Core {
+	result := []orders.Core{}
+	for key := range data {
 		result = append(result, data[key].toCore())
 	}
 	return result
 }
 
-func (data *OrderDetail) toOrderDetailCore() orders.OrderDetail{
+func (data *OrderDetail) toOrderDetailCore() orders.OrderDetail {
 	return orders.OrderDetail{
-		ID: int(data.ID),
-		OrderID: data.OrderID,
-		Price: data.Price,
-		Qty: data.Qty,
+		ID:          int(data.ID),
+		OrderID:     data.OrderID,
+		Price:       data.Price,
+		Qty:         data.Qty,
 		ProductName: data.ProductName,
 	}
 }
 
-func ToOrderDetailCoreList(data []OrderDetail)[]orders.OrderDetail{
-	result :=[]orders.OrderDetail{}
-	for key := range data{
+func ToOrderDetailCoreList(data []OrderDetail) []orders.OrderDetail {
+	result := []orders.OrderDetail{}
+	for key := range data {
 		result = append(result, data[key].toOrderDetailCore())
 	}
 	return result
 }
 
-func (data *Cart) toOrderDetailFromCart() orders.OrderDetail{
+func (data *Cart) toOrderDetailFromCart() orders.OrderDetail {
 	return orders.OrderDetail{
-		ID: int(data.ID),
-		Qty: data.Qty,
+		ID:          int(data.ID),
+		Qty:         data.Qty,
 		ProductName: data.Product.Name,
-		Price: data.Product.Price,
+		Price:       data.Product.Price,
 	}
 }
 
-func ToOrderDetailCoreListFromCart(data []Cart)[]orders.OrderDetail{
-	result :=[]orders.OrderDetail{}
-	for key := range data{
+func ToOrderDetailCoreListFromCart(data []Cart) []orders.OrderDetail {
+	result := []orders.OrderDetail{}
+	for key := range data {
 		result = append(result, data[key].toOrderDetailFromCart())
 	}
 	return result
 }
 
-func fromCore(core orders.Core) Order{
+func fromCore(core orders.Core) Order {
 	return Order{
-		PaymentID: core.PaymentID,
 		AddressID: core.AddressID,
-		Price: core.Price,
-		UserID: core.UserID,
+		Price:     core.Price,
+		UserID:    core.UserID,
 	}
 }
 
-func fromOrderDetailCore(orderDetailCore orders.OrderDetail) OrderDetail{
+func fromOrderDetailCore(orderDetailCore orders.OrderDetail) OrderDetail {
 	return OrderDetail{
 		ProductName: orderDetailCore.ProductName,
-		Price: orderDetailCore.Price,
-		OrderID: orderDetailCore.OrderID,
-		Qty: orderDetailCore.Qty,
+		Price:       orderDetailCore.Price,
+		OrderID:     orderDetailCore.OrderID,
+		Qty:         orderDetailCore.Qty,
 	}
 }
 
-func fromOrderDetailCoreList(data []orders.OrderDetail)[]OrderDetail{
-	result :=[]OrderDetail{}
-	for key := range data{
+func fromOrderDetailCoreList(data []orders.OrderDetail) []OrderDetail {
+	result := []OrderDetail{}
+	for key := range data {
 		result = append(result, fromOrderDetailCore(data[key]))
 	}
 	return result
 }
 
-
-func fromAddressCore(addressCore orders.AddressCore) Address{
+func fromAddressCore(addressCore orders.AddressCore) Address {
 	return Address{
-		City: addressCore.City,
-		Province: addressCore.Province,
-		PostalCode: addressCore.PostalCode,
-		Street: addressCore.Street,
+		Receiver: addressCore.Receiver,
+		Phone:    addressCore.Phone,
+		Address:  addressCore.Address,
 	}
 }
 
-func fromPaymentCore(paymentCore orders.PaymentCore) Payment{
+func fromPaymentCore(paymentCore orders.PaymentCore) Payment {
 	return Payment{
-		NumberCard: paymentCore.NumberCard,
+		NumberCard:  paymentCore.NumberCard,
 		PaymentCode: paymentCore.PaymentCode,
 		PaymentName: paymentCore.PaymentName,
 	}
