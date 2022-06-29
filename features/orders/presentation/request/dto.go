@@ -4,7 +4,7 @@ import "project/e-comerce/features/orders"
 
 
 type Order struct{
-	Price 	int 	`form:"price" json:"price"`
+	//Price 	int 	`form:"price" json:"price"`
 	CartID 	[]int	`form:"cartid" json:"cartid"`
 	Address Address	`form:"address" json:"address"`
 	Payment Payment	`form:"payment" json:"payment"`
@@ -26,7 +26,7 @@ type Payment struct{
 
 func ToCore(reqData Order)orders.Core{
 	return orders.Core{
-		Price: reqData.Price,
+		//Price: reqData.Price,
 		Address: orders.AddressCore{
 			City: reqData.Address.City,
 			Province: reqData.Address.Province,

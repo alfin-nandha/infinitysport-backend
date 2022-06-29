@@ -50,6 +50,9 @@ type Data interface {
 	InsertPayment(PaymentCore)(payID int,err error)
 	InsertOrderDetail(int,[]OrderDetail)(error)
 	SelectOrder(int)([]Core ,error)
-	SelectChart([]int)([]OrderDetail,error)
+	SelectCart([]int)(orderDetail []OrderDetail, productId []int, Price int,err error)
 	SelectOrderDetailByOrderID(orderID int)([]OrderDetail, error)
+	UpdateOrder(orderid int, price int)(error)
+	SelectProduct(productid int)(stock int, err error)
+	UpdateStockProduct(productid int,qty int)(error)
 }

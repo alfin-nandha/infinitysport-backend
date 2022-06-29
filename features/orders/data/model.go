@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	_mProduct "project/e-comerce/features/carts/data"
 	"project/e-comerce/features/orders"
 
@@ -13,6 +12,7 @@ type Order struct{
 	PaymentID int
 	UserID int
 	Price int
+	status string
 	AddressID int
 	Address Address
 	Payment Payment
@@ -139,8 +139,6 @@ func fromOrderDetailCoreList(data []orders.OrderDetail)[]OrderDetail{
 	for key := range data{
 		result = append(result, fromOrderDetailCore(data[key]))
 	}
-	fmt.Println(result)
-	fmt.Println(data)
 	return result
 }
 

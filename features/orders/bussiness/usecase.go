@@ -1,7 +1,7 @@
 package bussiness
 
 import (
-	"fmt"
+	"errors"
 	"log"
 	"project/e-comerce/features/orders"
 )
@@ -17,6 +17,26 @@ func NewOrderBusiness(usrData orders.Data) orders.Bussiness {
 }
 
 func (uc orderUseCase)AddOrder(core orders.Core, cartID []int)(error){
+	dataDetailOrder, productId, totalPrice, errGetDetailOrder := uc.orderData.SelectCart(cartID)
+	if errGetDetailOrder != nil{
+		log.Print(errGetDetailOrder)
+		return errGetDetailOrder
+	}
+
+	var remain_stock_list []int
+	for i,val := range productId{
+		stockProduct, errCheckStock := uc.orderData.SelectProduct(val)
+		if errCheckStock != nil{
+			log.Print(errCheckStock)
+			return errCheckStock
+		}
+		remain_stock := stockProduct - dataDetailOrder[i].Qty
+		remain_stock_list = append(remain_stock_list, remain_stock) 
+		if remain_stock < 0{
+			return errors.New("product stock is not enough")
+		}
+	}
+
 	addID, errAdd := uc.orderData.InsertAddress(core.Address)
 	if errAdd != nil{
 		log.Print(errAdd)
@@ -34,19 +54,26 @@ func (uc orderUseCase)AddOrder(core orders.Core, cartID []int)(error){
 		log.Print(errOrder)
 		return errOrder
 	}
-	fmt.Println(cartID)
-	dataDetailOrder,errGetDetailOrder := uc.orderData.SelectChart(cartID)
-	if errGetDetailOrder != nil{
-		log.Print(errGetDetailOrder)
-		return errGetDetailOrder
-	}
-	fmt.Println("usecase" , dataDetailOrder)
+
 	errOrderDetail := uc.orderData.InsertOrderDetail(orderID, dataDetailOrder)
 	if errOrderDetail != nil{
 		log.Print(errOrderDetail)
 		return errOrderDetail
 	}
 
+	errUpdateOrder := uc.orderData.UpdateOrder(orderID, totalPrice)
+	if errUpdateOrder != nil{
+		log.Print(errUpdateOrder)
+		return errUpdateOrder
+	}
+
+	for i,val := range productId{
+		errUpdateProduct := uc.orderData.UpdateStockProduct(val,remain_stock_list[i])
+		if errUpdateProduct != nil{
+			log.Print(errUpdateProduct)
+			return errUpdateProduct
+		}
+	}
 	return nil
 }
 

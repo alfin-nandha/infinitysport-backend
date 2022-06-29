@@ -2,7 +2,7 @@ package data
 
 import (
 	"errors"
-	"fmt"
+	"project/e-comerce/features/carts/data"
 	"project/e-comerce/features/orders"
 
 	"gorm.io/gorm"
@@ -47,7 +47,6 @@ func (repo *mysqlOrderRepository)InsertOrder(order orders.Core, payID int, addID
 	if result.Error != nil || result.RowsAffected == 0{
 		return 0,errors.New("failed add order")
 	}
-	fmt.Println(orderModel.ID)
 	return int(orderModel.ID),nil
 }
 
@@ -56,8 +55,6 @@ func (repo *mysqlOrderRepository)InsertOrderDetail(orderID int,orderDetail []ord
 	for i:=0;i<len(orderDetailModel);i++{
 		orderDetailModel[i].OrderID = orderID
 	}
-	fmt.Println(orderID)
-
 	result := repo.db.Create(&orderDetailModel)
 
 	if result.Error != nil || result.RowsAffected == 0{
@@ -90,16 +87,54 @@ func (repo *mysqlOrderRepository)SelectOrderDetailByOrderID(orderId int)([]order
 	return orderDataList, nil
 }
 
-func (repo *mysqlOrderRepository)SelectChart(cartId []int)([]orders.OrderDetail ,error){
+func (repo *mysqlOrderRepository)SelectCart(cartId []int)([]orders.OrderDetail , []int, int, error){
 	cartData := []Cart{}
+	totalPrice := 0
+	var productid []int
 	result := repo.db.Preload("Product").Find(&cartData, cartId)
 	if result.Error != nil{
-		return []orders.OrderDetail{}, errors.New("failed get orders")
+		return []orders.OrderDetail{}, productid, 0,errors.New("failed get orders")
+	}
+	
+	for i:=0;i<len(cartData);i++{
+		cartData[i].Product.Price = cartData[i].Product.Price*cartData[i].Qty
+		totalPrice += cartData[i].Product.Price
+		productid = append(productid, cartData[i].ProductID)
 	}
 
 	orderDetailDataList := ToOrderDetailCoreListFromCart(cartData)
-
-	return orderDetailDataList, nil
+	return orderDetailDataList, productid, totalPrice, nil
 }
 
+
+func (repo *mysqlOrderRepository)UpdateOrder(orderId int, price int)(error){
+	order := Order{}
+	order.ID = uint(orderId)
+	result := repo.db.Model(order).Update("price",price)
+	if result.Error != nil || result.RowsAffected == 0{
+		return errors.New("failed update price orders")
+	}
+	return nil
+}
+
+func (repo *mysqlOrderRepository)SelectProduct(productId int)(qty int, err error){
+	product := data.Product{}
+	product.ID = uint(productId)
+	result := repo.db.First(&product)
+	if result.Error != nil || result.RowsAffected == 0{
+		return 0,errors.New("failed update price orders")
+	}
+	return product.Stock,nil
+}
+
+func (repo *mysqlOrderRepository)UpdateStockProduct(productid int, qty int)(error){
+	product := data.Product{}
+
+	result := repo.db.Model(product).Where("id = ?", productid).Update("stock", qty)
+	if result.Error != nil || result.RowsAffected == 0{
+		return errors.New("failed update stock product")
+	}
+	return nil
+	
+}
 //updateproduct
