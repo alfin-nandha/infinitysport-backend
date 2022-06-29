@@ -15,7 +15,7 @@ func FromCore(data carts.Core) Cart {
 		ID:        data.ID,
 		ProductID: data.ProductID,
 		UserID:    data.UserID,
-		Price:     data.Price,
+		Price:     data.Product.Price,
 		Qty:       data.Qty,
 	}
 }

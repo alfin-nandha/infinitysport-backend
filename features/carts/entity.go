@@ -31,13 +31,15 @@ type User struct {
 
 type Business interface {
 	AddCart(data Core) (row int, err error)
-	GetAllCart() (data []Core, err error)
-	UpdateCart(UserId int, Qty int) (row int, err error)
+	GetAllCart(UserId int) (data []Core, err error)
+	UpdateCart(data Core, Id int) (row int, err error)
+	DestroyCart(UserId, Id int) (row int, err error)
 }
 
 type Data interface {
-	CheckProductInCart(UserId int, IdProduct int) (bool, error)
+	CheckProductInCart(UserId int, IdProduct int) (int, error)
 	InsertData(data Core) (row int, err error)
-	SelectData() (data []Core, err error)
-	Update(UserId int, qty int) (row int, err error)
+	SelectData(UserId int) (data []Core, err error)
+	Update(data Core, Id int) (row int, err error)
+	Destroy(UserId, id int) (row int, err error)
 }

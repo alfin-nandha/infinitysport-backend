@@ -68,6 +68,6 @@ func fromCore(core carts.Core) Cart {
 	}
 }
 
-func toCore(data Cart) carts.Core {
-	return data.toCore()
-}
+// func toCore(data Cart) carts.Core {
+// 	return data.toCore()
+// }

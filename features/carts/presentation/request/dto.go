@@ -14,3 +14,10 @@ func ToCore(cartReq Cart) carts.Core {
 	}
 	return cartCore
 }
+
+func ToUpdateCore(cartReq Cart) carts.Core {
+	cartCore := carts.Core{
+		Qty: cartReq.Qty,
+	}
+	return cartCore
+}
