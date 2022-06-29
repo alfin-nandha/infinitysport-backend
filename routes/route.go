@@ -35,6 +35,11 @@ func New(presenter factory.Presenter) *echo.Echo {
 	e.GET("/orders/:orderid", presenter.OrderPresenter.GeOrderDetailByOrderID, middlewares.JWTMiddleware())
 	e.POST("/orders/:orderid/confirm", presenter.OrderPresenter.ConfirmOrder, middlewares.JWTMiddleware())
 	e.PUT("/orders/:orderid/cancel", presenter.OrderPresenter.CancelOrder, middlewares.JWTMiddleware())
+	// Cart
+	e.POST("/carts", presenter.CartPresenter.AddCart, middlewares.JWTMiddleware())
+	e.GET("/carts", presenter.CartPresenter.GetAll, middlewares.JWTMiddleware())
+	e.PUT("/carts/:id", presenter.CartPresenter.Update, middlewares.JWTMiddleware())
+	e.DELETE("/carts/:id", presenter.CartPresenter.Destroy, middlewares.JWTMiddleware())
 
 	return e
 }
