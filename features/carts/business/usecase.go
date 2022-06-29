@@ -24,8 +24,10 @@ func (uc *cartUseCase) GetAllCart(UserId int) (response []carts.Core, err error)
 func (uc *cartUseCase) AddCart(data carts.Core) (result int, err error) {
 	resultCart, _ := uc.cartData.CheckProductInCart(data.UserID, data.ProductID)
 
-	if resultCart == 0 {
+	if resultCart == false {
 		result, _ = uc.cartData.InsertData(data)
+	} else {
+	  result, _ = uc.cartData.UpdateAddCart(data, )
 	}
 
 	return result, nil

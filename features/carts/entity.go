@@ -37,7 +37,7 @@ type Business interface {
 }
 
 type Data interface {
-	CheckProductInCart(UserId int, IdProduct int) (int, error)
+	CheckProductInCart(UserId int, IdProduct int) (bool, int, int, error)
 	InsertData(data Core) (row int, err error)
 	SelectData(UserId int) (data []Core, err error)
 	Update(data Core, Id int) (row int, err error)

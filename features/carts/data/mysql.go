@@ -17,17 +17,14 @@ func NewCartRepository(conn *gorm.DB) carts.Data {
 	}
 }
 
-func (repo *mysqlCartRepository) CheckProductInCart(UserId int, IdProduct int) (result int, err error) {
+func (repo *mysqlCartRepository) CheckProductInCart(UserId int, IdProduct int) (result bool, idCart, Qty int, err error) {
 	var data Cart
 	response := repo.db.Where("user_id = ? AND product_id = ?", UserId, IdProduct).First(&data)
 
-	if response.Error != nil {
-		return -1, response.Error
-	}
 	if response.RowsAffected == 0 {
-		return 0, nil
+		return false, 0, 0, nil
 	}
-	return int(data.ID), nil
+	return true, int(data.ID), data.Qty, nil
 }
 
 func (repo *mysqlCartRepository) SelectData(UserId int) ([]carts.Core, error) {
