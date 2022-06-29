@@ -95,7 +95,7 @@ paths:
     delete:
       tags:
         - Users
-      summary: Delete user's data by id
+      summary: Delete user's data by id 
       security:
         - JWTAuth: []
       parameters:
