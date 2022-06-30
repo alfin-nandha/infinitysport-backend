@@ -75,6 +75,23 @@ func TestGetAllData(t *testing.T) {
 	})
 }
 
+func TestGetDataById(t *testing.T) {
+	t.Run("Test Get Data By Id", func(t *testing.T) {
+		id := 1
+		userBusiness := NewUserBusiness(mockUserData{})
+		result, err := userBusiness.GetDataById(id)
+		assert.Nil(t, err)
+		assert.Equal(t, "alta", result.Name)
+	})
+	t.Run("Test Get Data By Id Failed", func(t *testing.T) {
+		id := 3
+		userBusiness := NewUserBusiness(mockUserDataFailed{})
+		result, err := userBusiness.GetDataById(id)
+		assert.NotNil(t, err)
+		assert.Nil(t, result)
+	})
+}
+
 func TestInsertData(t *testing.T) {
 	t.Run("Test Insert Data Success", func(t *testing.T) {
 		userBusiness := NewUserBusiness(mockUserData{})
@@ -85,7 +102,7 @@ func TestInsertData(t *testing.T) {
 		}
 		result, err := userBusiness.InsertData(newUser)
 		assert.Nil(t, err)
-		assert.Equal(t, -1, result)
+		assert.Equal(t, 1, result)
 	})
 
 	t.Run("Test Insert Data Failed", func(t *testing.T) {
@@ -108,7 +125,7 @@ func TestInsertData(t *testing.T) {
 		}
 		result, err := userBusiness.InsertData(newUser)
 		assert.NotNil(t, err)
-		assert.Equal(t, -1, result)
+		assert.Equal(t, -2, result)
 	})
 
 	t.Run("Test Insert Data Failed When Password Empty", func(t *testing.T) {
@@ -119,6 +136,23 @@ func TestInsertData(t *testing.T) {
 		}
 		result, err := userBusiness.InsertData(newUser)
 		assert.NotNil(t, err)
-		assert.Equal(t, -1, result)
+		assert.Equal(t, -2, result)
+	})
+}
+
+func TestDeleteData(t *testing.T) {
+	t.Run("Test Delete Data", func(t *testing.T) {
+		id := 1
+		userBusiness := NewUserBusiness(mockUserData{})
+		result, err := userBusiness.DeleteData(id)
+		assert.Nil(t, err)
+		assert.Equal(t, 1, result)
+	})
+	t.Run("Test Delete Data Failed", func(t *testing.T) {
+		id := 3
+		userBusiness := NewUserBusiness(mockUserData{})
+		result, err := userBusiness.DeleteData(id)
+		assert.NotNil(t, err)
+		assert.Equal(t, 0, result)
 	})
 }

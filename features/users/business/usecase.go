@@ -23,25 +23,25 @@ func (uc *userUseCase) GetAllData(limit, offset int) (response []users.Core, err
 }
 
 func (uc *userUseCase) GetDataById(id int) (response users.Core, err error) {
-	response, err = uc.userData.SelectDataById(id)
-	return response, err
+	resp, errData := uc.userData.SelectDataById(id)
+	return resp, errData
 }
 
 func (uc *userUseCase) InsertData(userRequest users.Core) (row int, err error) {
 
 	if userRequest.Name == "" || userRequest.Email == "" || userRequest.Password == "" {
-		return 0, errors.New("all data must be filled")
+		return -2, errors.New("all data must be filled")
 	}
 
 	passWillBcrypt := []byte(userRequest.Password)
 	hash, err_hash := bcrypt.GenerateFromPassword(passWillBcrypt, bcrypt.DefaultCost)
 	if err_hash != nil {
-		return -2, errors.New("hashing password failed")
+		return -1, errors.New("hashing password failed")
 	}
 	userRequest.Password = string(hash)
 	result, err := uc.userData.InsertData(userRequest)
 	if err != nil {
-		return -1, errors.New("failed to insert data")
+		return 0, errors.New("failed to insert data")
 	}
 	return result, nil
 }
