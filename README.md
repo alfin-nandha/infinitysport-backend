@@ -4,10 +4,9 @@
 
 ```bash
 https://infinitysport.site
-
-#this is link development access 
-https://app.swaggerhub.com/apis-docs/Alfin7007/infinitysport/1.0.0#/
 ```
+This is link development access by swagger
+[Link](https://app.swaggerhub.com/apis-docs/Alfin7007/infinitysport/1.0.1#/)
 
 ## Endpoint to Access API
 
@@ -93,5 +92,47 @@ this is method used for client to cancelled orders
 
 ### CART
 
-## 
+this is feature for waiting list order customer
 
+```bash
+https://infinitysport.site/carts
+
+#example:
+GET  https://infinitysport.site/carts
+POST https://infinitysport.site/carts
+```
+
+update cart customer, you can be used method
+
+```bash
+https://infinitysport.site/carts/id
+
+PUT    https://infinitysport.site/carts/id
+DELETE https://infinitysport.site/carts/id
+```
+
+you can manipulation list carts, by PUT and DELETE method
+
+## Feature List InfinitySport API
+### USER
+* Register
+* Login
+* Authorized 
+* List Account
+* Delete Account
+* Update Account
+
+### ORDER
+* Order List
+* Checkout payment
+* Cancel Order
+
+### CART
+* Cart List
+* Manipulation Cart List
+
+### PRODUCT
+* Product List management
+* Add Product
+* Update Product
+* Delete Product
