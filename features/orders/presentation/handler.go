@@ -1,6 +1,7 @@
 package presentation
 
 import (
+	"fmt"
 	"net/http"
 	"project/e-comerce/features/orders"
 	"project/e-comerce/features/orders/presentation/request"
@@ -32,6 +33,8 @@ func (h OrderHandler) AddOrder(c echo.Context) error {
 	if errBind != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to bind data"))
 	}
+
+	fmt.Println(reqData.Address.Receiver)
 
 	dataCore := request.ToCore(reqData)
 	dataCore.UserID = userID_token
