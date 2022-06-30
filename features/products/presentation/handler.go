@@ -111,10 +111,6 @@ func (h *ProductHandler) InsertData(c echo.Context) error {
 
 }
 
-func formFile() {
-
-}
-
 func (h *ProductHandler) DeleteData(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 

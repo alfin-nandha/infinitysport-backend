@@ -9,9 +9,9 @@ type Order struct {
 }
 
 type Address struct {
-	Receiver string `form:"city" json:"city"`
-	Phone    string `form:"province" json:"province"`
-	Address  string `form:"postalcode" json:"postalcode"`
+	Receiver string `form:"receiver" json:"receiver"`
+	Phone    string `form:"phone" json:"phone"`
+	Address  string `form:"address" json:"address"`
 }
 
 type Payment struct {
