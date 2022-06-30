@@ -6,6 +6,7 @@ import (
 	_requestUser "project/e-comerce/features/users/presentation/request"
 	_responseUser "project/e-comerce/features/users/presentation/response"
 	"project/e-comerce/helper"
+	"project/e-comerce/middlewares"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -37,12 +38,14 @@ func (h *UserHandler) GetAll(c echo.Context) error {
 }
 
 func (h *UserHandler) GetDataById(c echo.Context) error {
-	id, _ := strconv.Atoi(c.Param("id"))
-	result, err := h.userBusiness.GetDataById(id)
-	if id != result.ID {
-		return c.JSON(http.StatusBadGateway,
-			helper.ResponseFailed("no get data user"))
+	userID_token, errToken := middlewares.ExtractToken(c)
+	if userID_token == 0 || errToken != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "failed to get user id",
+		})
 	}
+
+	result, err := h.userBusiness.GetDataById(userID_token)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helper.ResponseFailed("failed to get data"))
@@ -69,18 +72,28 @@ func (h *UserHandler) Insert(c echo.Context) error {
 }
 
 func (h *UserHandler) Delete(c echo.Context) error {
-	id, _ := strconv.Atoi(c.Param("id"))
-	_, err := h.userBusiness.DeleteData(id)
+	userID_token, errToken := middlewares.ExtractToken(c)
+	if userID_token == 0 || errToken != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "failed to get user id",
+		})
+	}
+	_, err := h.userBusiness.DeleteData(userID_token)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helper.ResponseFailed("failed to delete data"))
 	}
 	return c.JSON(http.StatusOK,
-		helper.ResponseFailed("success delete data"))
+		helper.ResponseSuccessNoData("success delete data"))
 }
 
 func (h *UserHandler) Update(c echo.Context) error {
-	id, _ := strconv.Atoi(c.Param("id"))
+	userID_token, errToken := middlewares.ExtractToken(c)
+	if userID_token == 0 || errToken != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+			"message": "failed to get user id",
+		})
+	}
 
 	userReq := _requestUser.User{}
 	err_bind := c.Bind(&userReq)
@@ -90,7 +103,7 @@ func (h *UserHandler) Update(c echo.Context) error {
 	}
 
 	userCore := _requestUser.ToCore(userReq)
-	_, err := h.userBusiness.UpdateData(userCore, id)
+	_, err := h.userBusiness.UpdateData(userCore, userID_token)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helper.ResponseFailed("failed to insert data"))

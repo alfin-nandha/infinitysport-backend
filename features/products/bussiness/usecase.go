@@ -1,6 +1,7 @@
 package bussiness
 
 import (
+	"errors"
 	"project/e-comerce/features/products"
 )
 
@@ -25,6 +26,10 @@ func (uc *productUseCase) GetProductByID(id int) (response products.Core, err er
 }
 
 func (uc *productUseCase) InsertProduct(productRequest products.Core) error {
+	if productRequest.Name == "" || productRequest.PhotoUrl == "" || productRequest.ProductDetail == "" || productRequest.Stock == 0 || productRequest.Price == 0 {
+		return errors.New("all data must be filled")
+	}
+
 	err := uc.productData.InsertData(productRequest)
 	return err
 }

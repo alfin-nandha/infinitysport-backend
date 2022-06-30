@@ -48,11 +48,11 @@ func (mock mockUserDataFailed) InsertData(data users.Core) (row int, err error) 
 }
 
 func (mock mockUserDataFailed) DeleteData(id int) (row int, err error) {
-	return 0, nil
+	return 0, fmt.Errorf("failed to delete data ")
 }
 
 func (mock mockUserDataFailed) UpdateData(data map[string]interface{}, id int) (row int, err error) {
-	return 0, nil
+	return 0, fmt.Errorf("failed to update data ")
 }
 
 func TestGetAllData(t *testing.T) {
@@ -88,7 +88,7 @@ func TestGetDataById(t *testing.T) {
 		userBusiness := NewUserBusiness(mockUserDataFailed{})
 		result, err := userBusiness.GetDataById(id)
 		assert.NotNil(t, err)
-		assert.Nil(t, result)
+		assert.Equal(t, "", result.Name)
 	})
 }
 
@@ -149,8 +149,8 @@ func TestDeleteData(t *testing.T) {
 		assert.Equal(t, 1, result)
 	})
 	t.Run("Test Delete Data Failed", func(t *testing.T) {
-		id := 3
-		userBusiness := NewUserBusiness(mockUserData{})
+		id := 1
+		userBusiness := NewUserBusiness(mockUserDataFailed{})
 		result, err := userBusiness.DeleteData(id)
 		assert.NotNil(t, err)
 		assert.Equal(t, 0, result)
