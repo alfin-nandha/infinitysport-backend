@@ -121,7 +121,6 @@ func TestInsertProduct(t *testing.T) {
 		err := productBusiness.InsertProduct(newProduct)
 		assert.NotNil(t, err)
 	})
-
 }
 
 func TestGetProductByUserID(t *testing.T) {
@@ -158,5 +157,29 @@ func TestDeleteData(t *testing.T) {
 		err := productBusiness.DeleteProductByID(id, userid)
 		assert.NotNil(t, err)
 
+	})
+}
+
+func TestUpdateProduct(t *testing.T) {
+	t.Run("Test Update Data Success", func(t *testing.T) {
+		productBusiness := NewProductBusiness(mockProductDataSucces{})
+		id := 1
+		userid := 1
+		newProduct := products.Core{
+			Name: "sepatu baru", ProductDetail: "ini sepatu baru", Price: 10000, Stock: 10,
+		}
+		err := productBusiness.UpdateProductByID(newProduct, id, userid)
+		assert.Nil(t, err)
+	})
+
+	t.Run("Test Update Data Failed", func(t *testing.T) {
+		id := 1
+		userid := 0
+		productBusiness := NewProductBusiness(mockProductDataFailed{})
+		newProduct := products.Core{
+			Name: "septau",
+		}
+		err := productBusiness.UpdateProductByID(newProduct, id, userid)
+		assert.NotNil(t, err)
 	})
 }
