@@ -41,12 +41,11 @@ func (uc orderUseCase) AddOrder(core orders.Core, cartID []int, userId int) erro
 	}
 
 	addID, errAdd := uc.orderData.InsertAddress(core.Address)
+	log.Print("address = " , core.Address)
 	if errAdd != nil {
 		log.Print(errAdd)
 		return errAdd
 	}
-
-	log.Print("address = " , core.Address)
 
 	// payID, errPay := uc.orderData.InsertPayment(core.Payment)
 	// if errPay != nil {
