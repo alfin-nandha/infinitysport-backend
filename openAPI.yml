@@ -95,7 +95,7 @@ paths:
     delete:
       tags:
         - Users
-      summary: Delete user's data by id
+      summary: Delete user's data by id 
       security:
         - JWTAuth: []
       parameters:
@@ -269,7 +269,18 @@ paths:
           $ref: "#/components/responses/getcartsuccess"
         "400":
           $ref: "#/components/responses/OrderResponseFailed"
-
+  /orders/id:
+    get:
+      tags:
+        - Orders
+      summary: Get Detail order by Id
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/getcartsuccess"
+        "400":
+          $ref: "#/components/responses/OrderResponseFailed"
 ####################################
 #  COMPONENTS
 ####################################
@@ -355,14 +366,16 @@ components:
     requestDataOrder:
       type: object
       required:
-        - phone
+        - paymentid
+        - addressid
+        - cartid
       properties:
-        phone:
-          type: string
-          pattern: "^08[1-9][0-9]{8,13}$"
-          description: The first 2 character must be "08". The third character must be one of "1-9". The next character must be numeric "0-9".
-          minLength: 11
-          maxLength: 13
+        paymentid:
+          type: integer
+        addressid:
+          type: integer
+        cartid:
+          type: integer
     requestDataOrderUpdate:
       type: object
       required:

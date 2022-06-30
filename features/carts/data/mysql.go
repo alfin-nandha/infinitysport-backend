@@ -74,3 +74,16 @@ func (repo *mysqlCartRepository) Destroy(UserId, idCart int) (result int, err er
 	}
 	return int(tx.RowsAffected), nil
 }
+
+func (repo *mysqlCartRepository) DestroyAll(UserId int, idCart []int) (err error) {
+	tx := repo.db.Where("user_id = ?", UserId).Delete(&Cart{}, idCart)
+
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("failed to query delete")
+	}
+	return nil
+}

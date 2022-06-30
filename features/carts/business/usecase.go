@@ -22,28 +22,31 @@ func (uc *cartUseCase) GetAllCart(UserId int) (response []carts.Core, err error)
 // return valuenya bool, idcart, qty, err
 // if not data idcart 0
 func (uc *cartUseCase) AddCart(data carts.Core) (result int, err error) {
-	resultCart, idCart, Qty, _ := uc.cartData.CheckProductInCart(data.UserID, data.ProductID)
-
+	resultCart, idCart, Qty, err := uc.cartData.CheckProductInCart(data.UserID, data.ProductID)
+	if err != nil {
+		return 0, err
+	}
 	newQty := Qty + 1
 
 	if !resultCart {
-		result, _ = uc.cartData.InsertData(data)
+		result, err = uc.cartData.InsertData(data)
+
 	} else {
 		UserId := data.UserID
-		result, _ = uc.cartData.Update(UserId, idCart, newQty)
+		result, err = uc.cartData.Update(UserId, idCart, newQty)
 	}
-	return result, nil
+	return result, err
 }
 
 func (uc *cartUseCase) UpdateCart(data carts.Core, idCart int) (result int, err error) {
 	UserId := data.UserID
 	newQty := data.Qty
 
-	result, _ = uc.cartData.Update(UserId, idCart, newQty)
-	return result, nil
+	result, err = uc.cartData.Update(UserId, idCart, newQty)
+	return result, err
 }
 
 func (uc *cartUseCase) DestroyCart(UserId, idCart int) (result int, err error) {
-	result, _ = uc.cartData.Destroy(UserId, idCart)
-	return result, nil
+	result, err = uc.cartData.Destroy(UserId, idCart)
+	return result, err
 }

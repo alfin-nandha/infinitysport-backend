@@ -17,12 +17,12 @@ type Cart struct {
 
 type Product struct {
 	gorm.Model
-	Name   string `json:"name" form:"name"`
-	Detail string `json:"detail" form:"detail"`
-	Photo  string `json:"photo" form:"photo"`
-	URL    string `json:"url" form:"url"`
-	Stock  int    `json:"stock" form:"stock"`
-	Price  int    `json:"price" form:"price"`
+	Name   string
+	Detail string
+	Photo  string
+	URL    string
+	Stock  int
+	Price  int
 	UserID int
 	User   User
 	Cart   []Cart
@@ -30,9 +30,9 @@ type Product struct {
 
 type User struct {
 	gorm.Model
-	Name     string `json:"name" form:"name"`
-	Email    string `json:"email" form:"email"`
-	Password string `json:"password" form:"password"`
+	Name     string
+	Email    string
+	Password string
 	Product  []Product
 }
 
