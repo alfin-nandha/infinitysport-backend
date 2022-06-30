@@ -3,18 +3,19 @@ package bussiness
 import (
 	"errors"
 	"log"
+	"project/e-comerce/features/carts"
 	"project/e-comerce/features/orders"
 )
 
 type orderUseCase struct {
 	orderData orders.Data
-	// cartData carts.Data
+	cartData  carts.Data
 }
 
-func NewOrderBusiness(orderData orders.Data) orders.Bussiness {
+func NewOrderBusiness(orderData orders.Data, cartData carts.Data) orders.Bussiness {
 	return &orderUseCase{
 		orderData: orderData,
-		// cartData: cartData
+		cartData:  cartData,
 	}
 }
 
@@ -76,6 +77,13 @@ func (uc orderUseCase) AddOrder(core orders.Core, cartID []int, userId int) erro
 			return errUpdateProduct
 		}
 	}
+
+	errDeleteCart := uc.cartData.DestroyAll(userId, cartID)
+	if errDeleteCart != nil {
+		log.Print(errDeleteCart)
+		return errDeleteCart
+	}
+
 	return nil
 }
 

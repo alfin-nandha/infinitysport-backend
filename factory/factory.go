@@ -45,14 +45,13 @@ func InitFactory(dbConn *gorm.DB) Presenter {
 	productBusiness := _productBusiness.NewProductBusiness(productData)
 	productPresentation := _productPresentation.NewProductHandler(productBusiness)
 
-	orderData := _orderData.NewOrderRepository(dbConn)
-	// tambah parameter cartData
-	orderBusiness := _orderBusiness.NewOrderBusiness(orderData)
-	orderPresentation := _orderPresentation.NewOrderHandler(orderBusiness)
-
 	cartData := _cartData.NewCartRepository(dbConn)
 	cartBusiness := _cartBusiness.NewCartBusiness(cartData)
 	cartPresentation := _cartPresentation.NewCartHandler(cartBusiness)
+
+	orderData := _orderData.NewOrderRepository(dbConn)
+	orderBusiness := _orderBusiness.NewOrderBusiness(orderData, cartData)
+	orderPresentation := _orderPresentation.NewOrderHandler(orderBusiness)
 
 	return Presenter{
 		UserPresenter:    userPresentation,

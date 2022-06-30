@@ -42,4 +42,5 @@ type Data interface {
 	SelectData(UserId int) (data []Core, err error)
 	Update(UserId, idCart, Qty int) (row int, err error)
 	Destroy(UserId, id int) (row int, err error)
+	DestroyAll(UserId int, cartId []int) error
 }
