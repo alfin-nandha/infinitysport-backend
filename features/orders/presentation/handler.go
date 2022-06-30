@@ -1,7 +1,7 @@
 package presentation
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"project/e-comerce/features/orders"
 	"project/e-comerce/features/orders/presentation/request"
@@ -34,10 +34,12 @@ func (h OrderHandler) AddOrder(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to bind data"))
 	}
 
-	fmt.Println(reqData.Address.Receiver)
+	log.Print("request = ",reqData.Address)
 
 	dataCore := request.ToCore(reqData)
 	dataCore.UserID = userID_token
+
+	log.Print("core address = ", dataCore.Address)
 	err := h.orderBusiness.AddOrder(dataCore, reqData.CartID, userID_token)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.ResponseFailed(err.Error()))
