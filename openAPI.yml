@@ -95,7 +95,7 @@ paths:
     delete:
       tags:
         - Users
-      summary: Delete user's data by id 
+      summary: Delete user's data by id
       security:
         - JWTAuth: []
       parameters:
@@ -228,7 +228,7 @@ paths:
         "200":
           $ref: "#/components/responses/Updatecartsuccess"
         "400":
-          $ref: "#/components/responses/UpdateOrderFailed"
+          $ref: "#/components/responses/UpdateCartFailed"
     delete:
       tags:
         - Carts
@@ -1171,16 +1171,16 @@ components:
             $ref: "#/components/schemas/responseOrderWithData"
           example:
             Code: 200
-            Data:
-              {
-                OrderID: 1,
-                UsersID: 150,
-                GroupProductID: 1,
-                NameProduct: Netflix,
-                PriceOrder: 1254,
-                DetailCredential: "Email: subs.netflix@mail.com, Password: qwerty",
-              }
-            Message: Success Operation
+            Message: success to update data
+    UpdateCartFailed:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#"
+          example:
+            Code: 400
+            Message: failed to update data
     UpdateOrderFailed:
       description: Bad Request
       content:
