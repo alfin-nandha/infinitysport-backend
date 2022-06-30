@@ -171,25 +171,25 @@ paths:
       parameters:
         - $ref: "#/components/parameters/idParam"
       responses:
-        '200':
-          $ref: '#/components/responses/successOperationNonData'
-        '400':
-          $ref: '#/components/responses/deleteDataByIdFailed'
+        "200":
+          $ref: "#/components/responses/successOperationNonData"
+        "400":
+          $ref: "#/components/responses/deleteDataByIdFailed"
   /products/users:
-      get:
-        tags:
-          - Products
-        summary: Get user's products
-        security:
-          - JWTAuth: []
-        responses:
-          '200':
-            $ref: '#/components/responses/getProductsByUserIdSuccess'
-          '400':
-            $ref: '#/components/responses/getDataByIdFailed'
-####################################
-#  CART
-####################################
+    get:
+      tags:
+        - Products
+      summary: Get user's products
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/getProductsByUserIdSuccess"
+        "400":
+          $ref: "#/components/responses/getDataByIdFailed"
+  ####################################
+  #  CART
+  ####################################
   /carts:
     post:
       tags:
@@ -198,7 +198,7 @@ paths:
       security:
         - JWTAuth: []
       requestBody:
-        $ref: "#/components/requestBodies/requestBodyOrder"
+        $ref: "#/components/requestBodies/requestBodyAddCart"
       responses:
         "200":
           $ref: "#/components/responses/createcartsuccess"
@@ -223,7 +223,7 @@ paths:
       security:
         - JWTAuth: []
       requestBody:
-        $ref: "#/components/requestBodies/requestBodyOrderUpdate"
+        $ref: "#/components/requestBodies/requestBodyUpdateCart"
       responses:
         "200":
           $ref: "#/components/responses/Updatecartsuccess"
@@ -445,7 +445,7 @@ components:
             photo:
               type: string
               format: binary
-            url: 
+            url:
               type: string
             userid:
               type: int
@@ -731,6 +731,23 @@ components:
         multipart/form-data:
           schema:
             $ref: "#/components/schemas/requestDataUser"
+    requestBodyAddCart:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#"
+          example:
+            product_id: 1
+            quantity: 1
+    requestBodyUpdateCart:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#"
+          example:
+            quantity: 1
     requestBodyProduct:
       required: true
       content:
@@ -923,28 +940,29 @@ components:
           schema:
             $ref: "#/components/schemas/responseProductWithDataArray"
           example:
-            data: [
-              { 
-                id: 3,
-                name: Youtube-Music,
-                detail: Lorem,
-                photo: Youtube-Music-2021-12-13T10:06:45.jpg,
-                url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Music-2021-12-13T10:06:45.jpg,
-                stock: 6,
-                price: 300000,
-                userid : 1
-              },
-              { 
-                id: 4,
-                name: Youtube Premium,
-                detail: Berlangganan 1 bulan,
-                photo: Youtube-Premium-2021-12-14T09:34:47.png,
-                url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Premium-2021-12-14T09:34:47.png,
-                stock: 4,
-                price: 200000,
-                userid : 2
-              }
-            ]
+            data:
+              [
+                {
+                  id: 3,
+                  name: Youtube-Music,
+                  detail: Lorem,
+                  photo: Youtube-Music-2021-12-13T10:06:45.jpg,
+                  url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Music-2021-12-13T10:06:45.jpg,
+                  stock: 6,
+                  price: 300000,
+                  userid: 1,
+                },
+                {
+                  id: 4,
+                  name: Youtube Premium,
+                  detail: Berlangganan 1 bulan,
+                  photo: Youtube-Premium-2021-12-14T09:34:47.png,
+                  url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Premium-2021-12-14T09:34:47.png,
+                  stock: 4,
+                  price: 200000,
+                  userid: 2,
+                },
+              ]
             Message: Success
     getProductSuccess:
       description: Success Response Data
@@ -953,26 +971,8 @@ components:
           schema:
             $ref: "#/components/schemas/responseProductWithData"
           example:
-            Data: { 
-              id: 3,
-              name: Youtube-Music,
-              detail: Lorem,
-              photo: Youtube-Music-2021-12-13T10:06:45.jpg,
-              url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Music-2021-12-13T10:06:45.jpg,
-              stock: 6,
-              price: 300000,
-              userid: 1
-            }
-            Message: Success
-    getProductsByUserIdSuccess:
-      description: Success Response Data
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/responseProductWithData'
-          example:
-            Data: [
-              { 
+            Data:
+              {
                 id: 3,
                 name: Youtube-Music,
                 detail: Lorem,
@@ -980,9 +980,29 @@ components:
                 url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Music-2021-12-13T10:06:45.jpg,
                 stock: 6,
                 price: 300000,
-                userid: 1
+                userid: 1,
               }
-            ]
+            Message: Success
+    getProductsByUserIdSuccess:
+      description: Success Response Data
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/responseProductWithData"
+          example:
+            Data:
+              [
+                {
+                  id: 3,
+                  name: Youtube-Music,
+                  detail: Lorem,
+                  photo: Youtube-Music-2021-12-13T10:06:45.jpg,
+                  url: https://storage.googleapis.com/infinitysport-bucket/Youtube-Music-2021-12-13T10:06:45.jpg,
+                  stock: 6,
+                  price: 300000,
+                  userid: 1,
+                },
+              ]
             Message: Success
     updateProductFailed:
       description: Bad Request Response
@@ -1013,16 +1033,7 @@ components:
             $ref: "#/components/schemas/responseCreateOrderWithData"
           example:
             Code: 200
-            Data:
-              {
-                OrderID: 3,
-                EwalletType: OVO,
-                ExternalId: OVO-ewallet-20211219043142,
-                Amount: 25000,
-                BusinessId: 61b820fec8dadfc293726c7e,
-                Created: 19-12-2021,
-              }
-            Message: Success Operation
+            Message: Success Add Cart
     createOrderFailed:
       description: Bad Request
       content:
@@ -1050,11 +1061,22 @@ components:
             $ref: "#/components/schemas/responseOrderWithData"
           example:
             Code: 200
-            UserID: 15
             Data:
               [
-                { NameProduct: Netflix, PriceOrder: 1254, Qty: 1 },
-                { NameProduct: Youtube Premium, PriceOrder: 4321, Qty: 1 },
+                {
+                  UserID: 15,
+                  NameProduct: Netflix,
+                  Image: https://img.io/1,
+                  PriceOrder: 1254,
+                  Qty: 1,
+                },
+                {
+                  UserID: 15,
+                  NameProduct: Youtube Premium,
+                  Image: https://img.io/2,
+                  PriceOrder: 4321,
+                  Qty: 1,
+                },
               ]
             Message: Success Operation
     OrderResponseFailed:
