@@ -6,7 +6,6 @@ type Order struct {
 	//Price 	int 	`form:"price" json:"price"`
 	CartID  []int   `form:"cartid" json:"cartid"`
 	Address Address `form:"address" json:"address"`
-	Payment Payment `form:"payment" json:"payment"`
 }
 
 type Address struct {
