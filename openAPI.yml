@@ -122,8 +122,6 @@ paths:
           $ref: "#/components/responses/successOperationNonData"
         "400":
           $ref: "#/components/responses/createProductFailed"
-        "500":
-          $ref: "#/components/responses/productServerFailed"
     get:
       tags:
         - Products
@@ -160,8 +158,6 @@ paths:
           $ref: "#/components/responses/successOperationNonData"
         "400":
           $ref: "#/components/responses/updateProductFailed"
-        "500":
-          $ref: "#/components/responses/productServerFailed"
     delete:
       tags:
         - Products
@@ -212,7 +208,7 @@ paths:
         - JWTAuth: []
       responses:
         "200":
-          $ref: "#/components/responses/getcartsuccess"
+          $ref: "#/components/responses/getordersuccess"
         "400":
           $ref: "#/components/responses/OrderResponseFailed"
   /carts/{id}:
@@ -220,6 +216,8 @@ paths:
       tags:
         - Carts
       summary: Update cart by id order
+      parameters:
+        - $ref: "#/components/parameters/idParam"
       security:
         - JWTAuth: []
       requestBody:
@@ -233,6 +231,8 @@ paths:
       tags:
         - Carts
       summary: Delete cart by id
+      parameters:
+        - $ref: "#/components/parameters/idParam"
       security:
         - JWTAuth: []
       responses:
@@ -266,19 +266,51 @@ paths:
         - JWTAuth: []
       responses:
         "200":
-          $ref: "#/components/responses/getcartsuccess"
+          $ref: "#/components/responses/getordersuccess"
         "400":
           $ref: "#/components/responses/OrderResponseFailed"
-  /orders/id:
+  /orders/{id}:
     get:
       tags:
         - Orders
       summary: Get Detail order by Id
+      parameters:
+        - $ref: "#/components/parameters/idParam"
       security:
         - JWTAuth: []
       responses:
         "200":
-          $ref: "#/components/responses/getcartsuccess"
+          $ref: "#/components/responses/getorderbyidsuccess"
+        "400":
+          $ref: "#/components/responses/OrderResponseFailed"
+  /orders/{id}/confirm:
+    post:
+      tags:
+        - Orders
+      summary: Get Detail order by Id
+      parameters:
+        - $ref: "#/components/parameters/idParam"
+      security:
+        - JWTAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/requestBodyConfirmOrder"
+      responses:
+        "200":
+          $ref: "#/components/responses/confirmordersuccess"
+        "400":
+          $ref: "#/components/responses/OrderResponseFailed"
+  /orders/{id}/cancel:
+    put:
+      tags:
+        - Orders
+      summary: Get Detail order by Id
+      parameters:
+        - $ref: "#/components/parameters/idParam"
+      security:
+        - JWTAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/confirmordersuccess"
         "400":
           $ref: "#/components/responses/OrderResponseFailed"
 ####################################
@@ -312,7 +344,7 @@ components:
         password:
           type: string
           minLength: 6
-    requestDataProduct:
+    requestDataProductjson:
       type: object
       required:
         - name_product
@@ -333,6 +365,12 @@ components:
         stock:
           type: integer
           minimum: 2
+    
+    requestDataProduct:
+      type: object
+      required:
+        - file
+      properties:
         file:
           type: string
           format: binary
@@ -366,14 +404,17 @@ components:
     requestDataOrder:
       type: object
       required:
-        - paymentid
-        - addressid
+        - receiver
+        - phone
+        - address
         - cartid
       properties:
-        paymentid:
-          type: integer
-        addressid:
-          type: integer
+        receiver:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
         cartid:
           type: integer
     requestDataOrderUpdate:
@@ -630,9 +671,9 @@ components:
         Data:
           type: object
           properties:
-            OrderID:
+            ID:
               type: integer
-            UsersID:
+            UserID:
               type: integer
             GroupProductID:
               type: integer
@@ -767,12 +808,29 @@ components:
         multipart/form-data:
           schema:
             $ref: "#/components/schemas/requestDataProduct"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/requestDataProductjson"
+          example:
+            name: "joko"
+            detail: "082302xxxx"
+            stock: 5
+            proce: 10000
+            
     requestBodyProductUpdate:
       required: true
       content:
         multipart/form-data:
           schema:
-            $ref: "#/components/schemas/requestDataProductUpdate"
+            $ref: "#/components/schemas/requestDataProduct"
+        application/json:
+          schema:
+            $ref: "#/components/schemas/requestDataProductjson"
+          example:
+            name: "joko"
+            detail: "082302xxxx"
+            stock: 5
+            proce: 10000
     requestBodyOrder:
       required: true
       content:
@@ -786,7 +844,19 @@ components:
               phone: "082302xxxx",
               address: "malang dkk"
             }
-
+        multipart/form-data:
+          schema:
+            $ref: "#/components/schemas/requestDataOrder"
+    requestBodyConfirmOrder:
+      required: false
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/requestDataOrder"
+          example:
+            paymentname: "transfer bank"
+            numbercard: "12345"
+            paymentcode: "code123"
         multipart/form-data:
           schema:
             $ref: "#/components/schemas/requestDataOrder"
@@ -941,17 +1011,7 @@ components:
               $ref: "#/components/examples/accessForbidden"
             Bad Request:
               $ref: "#/components/examples/badRequest"
-    productServerFailed:
-      description: Internal Server Error Response
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/responseNonData"
-          examples:
-            Can't Connect to Server:
-              $ref: "#/components/examples/cantConnecttoServer"
-            Failed to Upload File:
-              $ref: "#/components/examples/failedtoUploadFile"
+   
     getAllProductsSuccess:
       description: Success Response Data
       content:
@@ -1040,19 +1100,17 @@ components:
               $ref: "#/components/examples/badRequest"
             File Extension Not Allowed:
               $ref: "#/components/examples/fileExtensionNotAllowed"
-            Illegal File:
-              $ref: "#/components/examples/illegalFile"
             Size File Too Big:
               $ref: "#/components/examples/sizeFileTooBig"
     createcartsuccess:
-      description: Success Operation
+      description: Success
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/responseCreateOrderWithData"
           example:
             Code: 200
-            Message: Success Add Cart
+            Message: Success
     createOrderFailed:
       description: Bad Request
       content:
@@ -1066,12 +1124,6 @@ components:
               $ref: "#/components/examples/badRequest"
             Access Forbidden:
               $ref: "#/components/examples/accessForbidden"
-            Invalid Telephone Number:
-              $ref: "#/components/examples/invalidTelephoneNumber"
-            Id Group Product Not Found:
-              $ref: "#/components/examples/idGroupProductNotFound"
-            Group Product Full:
-              $ref: "#/components/examples/groupProductFull"
     getcartsuccess:
       description: Success Operation
       content:
@@ -1098,6 +1150,71 @@ components:
                 },
               ]
             Message: Success Operation
+    getordersuccess:
+      description: Success Operation
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/responseOrderWithData"
+          example:
+            Code: 200
+            Data:
+              [
+                {
+                  ID: 1,
+                  UserID: 5,
+                  AddressID: 1,
+                  PriceOrder: 1254,
+                  Status: "Paid",
+                  Address: {
+                    ID: 1,
+                    Receiver: "alfin",
+                    Phone: "082333xxxxx",
+                    address: "malang dkk..."
+                  }
+                },
+                {
+                  ID: 2,
+                  UserID: 5,
+                  AddressID: 2,
+                  PriceOrder: 5000,
+                  Status: "Unpaid",
+                  Address: {
+                    ID: 2,
+                    Receiver: "yusup",
+                    Phone: "082111111xxxxx",
+                    address: "jakarta dkk..."
+                  }
+                },
+              ]
+            Message: Success Operation
+    getorderbyidsuccess:
+      description: Success Operation
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/responseOrderWithData"
+          example:
+            Code: 200
+            Data: [
+              {
+                ID: 1,
+                OrderID: 5,
+                ProductName: "sepatu pak jokowi",
+                Price: 200000,
+                Qty: 2,
+              }
+            ]
+            message: "success"
+    confirmordersuccess:
+      description: Success
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/responseCreateOrderWithData"
+          example:
+            Code: 200
+            Message: Success
     OrderResponseFailed:
       description: Bad Request
       content:
@@ -1245,14 +1362,7 @@ components:
       value:
         Code: 400
         Message: File Extension Not Allowed
-    groupProductFull:
-      value:
-        Code: 400
-        Message: Group Product Full
-    idGroupProductNotFound:
-      value:
-        Code: 400
-        Message: Id Group Product Not Found
+    
     idProductNotFound:
       value:
         Code: 400
