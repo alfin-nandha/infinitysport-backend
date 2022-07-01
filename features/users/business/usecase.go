@@ -30,13 +30,13 @@ func (uc *userUseCase) GetDataById(id int) (response users.Core, err error) {
 func (uc *userUseCase) InsertData(userRequest users.Core) (row int, err error) {
 
 	if userRequest.Name == "" || userRequest.Email == "" || userRequest.Password == "" {
-		return -2, errors.New("all data must be filled")
+		return -1, errors.New("all data must be filled")
 	}
 
 	passWillBcrypt := []byte(userRequest.Password)
 	hash, err_hash := bcrypt.GenerateFromPassword(passWillBcrypt, bcrypt.DefaultCost)
 	if err_hash != nil {
-		return -1, errors.New("hashing password failed")
+		return -2, errors.New("hashing password failed")
 	}
 	userRequest.Password = string(hash)
 	result, err := uc.userData.InsertData(userRequest)
@@ -49,9 +49,9 @@ func (uc *userUseCase) InsertData(userRequest users.Core) (row int, err error) {
 func (uc *userUseCase) DeleteData(id int) (row int, err error) {
 	result, err := uc.userData.DeleteData(id)
 	if err != nil {
-		return 0, errors.New("no data user for deleted")
+		return 0, errors.New("no data")
 	}
-	return result, nil
+	return result, err
 }
 
 func (uc *userUseCase) UpdateData(userReq users.Core, id int) (row int, err error) {
@@ -65,7 +65,7 @@ func (uc *userUseCase) UpdateData(userReq users.Core, id int) (row int, err erro
 	if userReq.Password != "" {
 		hash, err := bcrypt.GenerateFromPassword([]byte(userReq.Password), bcrypt.DefaultCost)
 		if err != nil {
-			return 0, errors.New("hasing password failed")
+			return -1, errors.New("hasing password failed")
 		}
 		updateMap["password"] = &hash
 	}

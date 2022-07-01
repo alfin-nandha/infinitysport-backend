@@ -40,7 +40,7 @@ func (mock mockUserDataFailed) SelectData(limit, offset int) (data []users.Core,
 }
 
 func (mock mockUserDataFailed) SelectDataById(id int) (data users.Core, err error) {
-	return data, fmt.Errorf("Failed to select data")
+	return users.Core{}, fmt.Errorf("Failed to select data")
 }
 
 func (mock mockUserDataFailed) InsertData(data users.Core) (row int, err error) {
@@ -48,11 +48,11 @@ func (mock mockUserDataFailed) InsertData(data users.Core) (row int, err error) 
 }
 
 func (mock mockUserDataFailed) DeleteData(id int) (row int, err error) {
-	return 0, fmt.Errorf("failed to delete data ")
+	return 0, fmt.Errorf("no data")
 }
 
 func (mock mockUserDataFailed) UpdateData(data map[string]interface{}, id int) (row int, err error) {
-	return 0, fmt.Errorf("failed to update data ")
+	return 0, fmt.Errorf("no data")
 }
 
 func TestGetAllData(t *testing.T) {
@@ -125,7 +125,7 @@ func TestInsertData(t *testing.T) {
 		}
 		result, err := userBusiness.InsertData(newUser)
 		assert.NotNil(t, err)
-		assert.Equal(t, -2, result)
+		assert.Equal(t, -1, result)
 	})
 
 	t.Run("Test Insert Data Failed When Password Empty", func(t *testing.T) {
@@ -136,7 +136,7 @@ func TestInsertData(t *testing.T) {
 		}
 		result, err := userBusiness.InsertData(newUser)
 		assert.NotNil(t, err)
-		assert.Equal(t, -2, result)
+		assert.Equal(t, -1, result)
 	})
 }
 
@@ -149,9 +149,36 @@ func TestDeleteData(t *testing.T) {
 		assert.Equal(t, 1, result)
 	})
 	t.Run("Test Delete Data Failed", func(t *testing.T) {
-		id := 1
+		id := 3
 		userBusiness := NewUserBusiness(mockUserDataFailed{})
 		result, err := userBusiness.DeleteData(id)
+		assert.NotNil(t, err)
+		assert.Equal(t, 0, result)
+	})
+}
+
+func TestUpdateData(t *testing.T) {
+	t.Run("Test Update Data", func(t *testing.T) {
+		id := 1
+		data := users.Core{
+			Name:     "Zaki",
+			Email:    "mail@mail.id",
+			Password: "Mail@",
+		}
+		userBusiness := NewUserBusiness(mockUserData{})
+		result, err := userBusiness.UpdateData(data, id)
+		assert.Nil(t, err)
+		assert.Equal(t, 1, result)
+	})
+	t.Run("Test Update Data Failed No data", func(t *testing.T) {
+		id := 3
+		data := users.Core{
+			Name:     "Zaki",
+			Email:    "mail@mail.id",
+			Password: "Mail@",
+		}
+		userBusiness := NewUserBusiness(mockUserDataFailed{})
+		result, err := userBusiness.UpdateData(data, id)
 		assert.NotNil(t, err)
 		assert.Equal(t, 0, result)
 	})
