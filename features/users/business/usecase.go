@@ -48,10 +48,7 @@ func (uc *userUseCase) InsertData(userRequest users.Core) (row int, err error) {
 
 func (uc *userUseCase) DeleteData(id int) (row int, err error) {
 	result, err := uc.userData.DeleteData(id)
-	if err != nil {
-		return 0, errors.New("no data user for deleted")
-	}
-	return result, nil
+	return result, err
 }
 
 func (uc *userUseCase) UpdateData(userReq users.Core, id int) (row int, err error) {
