@@ -88,7 +88,7 @@ func TestGetDataById(t *testing.T) {
 		userBusiness := NewUserBusiness(mockUserDataFailed{})
 		result, err := userBusiness.GetDataById(id)
 		assert.NotNil(t, err)
-		assert.Nil(t, result)
+		assert.Equal(t, "", result.Name)
 	})
 }
 
