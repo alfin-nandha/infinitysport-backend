@@ -63,28 +63,25 @@ paths:
   ####################################
   #  USERS
   ####################################
-  /users/{id}:
+  /users/details:
     get:
       tags:
         - Users
       summary: Get user's data by id
       security:
         - JWTAuth: []
-      parameters:
-        - $ref: "#/components/parameters/idParam"
       responses:
         "200":
           $ref: "#/components/responses/getUserSuccess"
         "400":
           $ref: "#/components/responses/getDataByIdFailed"
+  /users:
     put:
       tags:
         - Users
       summary: Edit user's data by id
       security:
         - JWTAuth: []
-      parameters:
-        - $ref: "#/components/parameters/idParam"
       requestBody:
         $ref: "#/components/requestBodies/requestBodyUserUpdate"
       responses:
@@ -98,8 +95,6 @@ paths:
       summary: Delete user's data by id
       security:
         - JWTAuth: []
-      parameters:
-        - $ref: "#/components/parameters/idParam"
       responses:
         "200":
           $ref: "#/components/responses/successOperationNonData"
