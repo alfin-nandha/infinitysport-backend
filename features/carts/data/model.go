@@ -1,7 +1,7 @@
 package data
 
 import (
-	"project/e-comerce/features/carts"
+	Carts "project/e-comerce/features/carts"
 
 	"gorm.io/gorm"
 )
@@ -36,13 +36,13 @@ type User struct {
 	Product  []Product
 }
 
-func (data *Cart) toCore() carts.Core {
-	return carts.Core{
+func (data *Cart) toCore() Carts.Core {
+	return Carts.Core{
 		ID:        int(data.ID),
 		ProductID: data.ProductID,
 		UserID:    data.UserID,
 		Qty:       data.Qty,
-		Product: carts.Product{
+		Product: Carts.Product{
 			ID:       int(data.Product.ID),
 			Name:     data.Product.Name,
 			PhotoUrl: data.Product.URL,
@@ -52,15 +52,15 @@ func (data *Cart) toCore() carts.Core {
 	}
 }
 
-func ToCoreList(data []Cart) []carts.Core {
-	result := []carts.Core{}
+func ToCoreList(data []Cart) []Carts.Core {
+	result := []Carts.Core{}
 	for key := range data {
 		result = append(result, data[key].toCore())
 	}
 	return result
 }
 
-func fromCore(core carts.Core) Cart {
+func fromCore(core Carts.Core) Cart {
 	return Cart{
 		ProductID: core.Product.ID,
 		UserID:    core.UserID,

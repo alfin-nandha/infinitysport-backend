@@ -1,23 +1,23 @@
 package business
 
 import (
-	"project/e-comerce/features/auth"
-	"project/e-comerce/middlewares"
+	Auth "project/e-comerce/features/auth"
+	Middlewares "project/e-comerce/middlewares"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type authUseCase struct {
-	userData auth.Data
+	userData Auth.Data
 }
 
-func NewAuthBusiness(usrData auth.Data) auth.Business {
+func NewAuthBusiness(usrData Auth.Data) Auth.Business {
 	return &authUseCase{
 		userData: usrData,
 	}
 }
 
-func (uc *authUseCase) Login(data auth.Core) (string, string, error) {
+func (uc *authUseCase) Login(data Auth.Core) (string, string, error) {
 	response, errFind := uc.userData.FindUser(data.Email)
 	if errFind != nil {
 		return "", "", errFind
@@ -26,8 +26,7 @@ func (uc *authUseCase) Login(data auth.Core) (string, string, error) {
 	if errCompare != nil {
 		return "", "", errCompare
 	}
-	token, err := middlewares.CreateToken(int(response.ID))
-
+	token, err := Middlewares.CreateToken(int(response.ID))
 
 	return token, response.Name, err
 }

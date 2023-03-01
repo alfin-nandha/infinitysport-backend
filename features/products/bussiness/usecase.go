@@ -2,30 +2,30 @@ package bussiness
 
 import (
 	"errors"
-	"project/e-comerce/features/products"
+	Products "project/e-comerce/features/products"
 )
 
 type productUseCase struct {
-	productData products.Data
+	productData Products.Data
 }
 
-func NewProductBusiness(usrData products.Data) products.Business {
+func NewProductBusiness(usrData Products.Data) Products.Business {
 	return &productUseCase{
 		productData: usrData,
 	}
 }
 
-func (uc *productUseCase) GetAllProduct() (response []products.Core, err error) {
+func (uc *productUseCase) GetAllProduct() (response []Products.Core, err error) {
 	resp, errData := uc.productData.SelectData()
 	return resp, errData
 }
 
-func (uc *productUseCase) GetProductByID(id int) (response products.Core, err error) {
+func (uc *productUseCase) GetProductByID(id int) (response Products.Core, err error) {
 	response, err = uc.productData.SelectDataByID(id)
 	return response, err
 }
 
-func (uc *productUseCase) InsertProduct(productRequest products.Core) error {
+func (uc *productUseCase) InsertProduct(productRequest Products.Core) error {
 	if productRequest.Name == "" || productRequest.PhotoUrl == "" || productRequest.ProductDetail == "" || productRequest.Stock == 0 || productRequest.Price == 0 {
 		return errors.New("all data must be filled")
 	}
@@ -39,7 +39,7 @@ func (uc *productUseCase) DeleteProductByID(id int, userId int) (err error) {
 	return err
 }
 
-func (uc *productUseCase) UpdateProductByID(productReq products.Core, id int, userId int) (err error) {
+func (uc *productUseCase) UpdateProductByID(productReq Products.Core, id int, userId int) (err error) {
 	updateMap := make(map[string]interface{})
 	if productReq.Name != "" {
 		updateMap["name"] = &productReq.Name
@@ -55,7 +55,7 @@ func (uc *productUseCase) UpdateProductByID(productReq products.Core, id int, us
 	return err
 }
 
-func (uc *productUseCase) GetProductByUserID(id_user int) (response []products.Core, err error) {
+func (uc *productUseCase) GetProductByUserID(id_user int) (response []Products.Core, err error) {
 	resp, errData := uc.productData.SelectDataByUserID(id_user)
 	return resp, errData
 }

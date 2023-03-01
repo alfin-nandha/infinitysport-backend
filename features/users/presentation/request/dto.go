@@ -1,6 +1,6 @@
 package request
 
-import "project/e-comerce/features/users"
+import Users "project/e-comerce/features/users"
 
 type User struct {
 	Name     string `json:"name" form:"name"`
@@ -8,8 +8,8 @@ type User struct {
 	Password string `json:"password" form:"password"`
 }
 
-func ToCore(userReq User) users.Core {
-	userCore := users.Core{
+func ToCore(userReq User) Users.Core {
+	userCore := Users.Core{
 		Name:     userReq.Name,
 		Email:    userReq.Email,
 		Password: userReq.Password,

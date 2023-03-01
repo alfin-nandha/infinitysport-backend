@@ -2,24 +2,24 @@ package presentation
 
 import (
 	"net/http"
-	"project/e-comerce/features/auth"
-	"project/e-comerce/features/auth/presentation/request"
+	Auth "project/e-comerce/features/auth"
+	Request "project/e-comerce/features/auth/presentation/request"
 
 	"github.com/labstack/echo/v4"
 )
 
 type AuthHandler struct {
-	userBusiness auth.Business
+	userBusiness Auth.Business
 }
 
-func NewAuthHandler(business auth.Business) *AuthHandler {
+func NewAuthHandler(business Auth.Business) *AuthHandler {
 	return &AuthHandler{
 		userBusiness: business,
 	}
 }
 
 func (h *AuthHandler) Login(c echo.Context) error {
-	reqBody := request.User{}
+	reqBody := Request.User{}
 	errBind := c.Bind(&reqBody)
 	if errBind != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
@@ -27,7 +27,7 @@ func (h *AuthHandler) Login(c echo.Context) error {
 		})
 	}
 
-	authCore := request.ToCore(reqBody)
+	authCore := Request.ToCore(reqBody)
 	result, name, err := h.userBusiness.Login(authCore)
 
 	if err != nil {

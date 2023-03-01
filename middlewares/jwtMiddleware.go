@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"fmt"
-	"project/e-comerce/config"
+	Utils "project/e-comerce/utils"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -13,7 +13,7 @@ import (
 func JWTMiddleware() echo.MiddlewareFunc {
 	return middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: "HS256",
-		SigningKey:    []byte(config.JWT()),
+		SigningKey:    []byte(Utils.Config.App.SecretJWT),
 	})
 }
 func CreateToken(userId int) (string, error) {
@@ -23,7 +23,7 @@ func CreateToken(userId int) (string, error) {
 	claims["exp"] = time.Now().Add(time.Hour * 5).Unix() //Token expires after 1 hour
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte(config.JWT()))
+	return token.SignedString([]byte(Utils.Config.App.SecretJWT))
 }
 
 func ExtractToken(e echo.Context) (int, error) {

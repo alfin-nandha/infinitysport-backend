@@ -1,7 +1,7 @@
 package response
 
 import (
-	_order "project/e-comerce/features/orders"
+	Orders "project/e-comerce/features/orders"
 	"time"
 )
 
@@ -21,7 +21,7 @@ type OrderDetail struct {
 	Price       int    `json:"price" form:"price"`
 }
 
-func OrderFromCore(data _order.Core) Order {
+func OrderFromCore(data Orders.Core) Order {
 	return Order{
 		ID:     data.ID,
 		Time:   data.CreatedAt,
@@ -31,7 +31,7 @@ func OrderFromCore(data _order.Core) Order {
 	}
 }
 
-func FromCoreList(data []_order.Core) []Order {
+func FromCoreList(data []Orders.Core) []Order {
 	result := []Order{}
 	for key := range data {
 		result = append(result, OrderFromCore(data[key]))
@@ -39,7 +39,7 @@ func FromCoreList(data []_order.Core) []Order {
 	return result
 }
 
-func OrderDetailFromCore(data _order.OrderDetail) OrderDetail {
+func OrderDetailFromCore(data Orders.OrderDetail) OrderDetail {
 	return OrderDetail{
 		ID:          data.ID,
 		ProductName: data.ProductName,
@@ -47,7 +47,7 @@ func OrderDetailFromCore(data _order.OrderDetail) OrderDetail {
 	}
 }
 
-func FromOrderDetailCoreList(data []_order.OrderDetail) []OrderDetail {
+func FromOrderDetailCoreList(data []Orders.OrderDetail) []OrderDetail {
 	result := []OrderDetail{}
 	for key := range data {
 		result = append(result, OrderDetailFromCore(data[key]))

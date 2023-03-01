@@ -1,8 +1,6 @@
-package config
+package utils
 
 import (
-	"os"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -22,8 +20,8 @@ func GetSession() *session.Session {
 
 func initSession() *session.Session {
 	newSession := session.Must(session.NewSession(&aws.Config{
-		Region:      aws.String(os.Getenv("AWS_REGION")),
-		Credentials: credentials.NewStaticCredentials(os.Getenv("S3_KEY"), os.Getenv("S3_SECRET"), ""),
+		Region:      aws.String(Config.S3.Region),
+		Credentials: credentials.NewStaticCredentials(Config.S3.Key, Config.S3.Secret, ""),
 	}))
 	return newSession
 }

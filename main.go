@@ -6,12 +6,12 @@ import (
 	"project/e-comerce/migration"
 	"project/e-comerce/routes"
 
-	"project/e-comerce/config"
+	Utils "project/e-comerce/utils"
 )
 
 func main() {
 	// connection database
-	dbConn := config.InitDB()
+	dbConn := Utils.InitDB()
 	// migration table
 	migration.Migration(dbConn)
 	// routes

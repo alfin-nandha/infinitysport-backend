@@ -1,7 +1,7 @@
 package request
 
 import (
-	"project/e-comerce/features/auth"
+	Auth "project/e-comerce/features/auth"
 )
 
 type User struct {
@@ -9,8 +9,8 @@ type User struct {
 	Password string `json:"password" form:"password" validate:"required"`
 }
 
-func ToCore(userReq User) auth.Core {
-	userCore := auth.Core{
+func ToCore(userReq User) Auth.Core {
+	userCore := Auth.Core{
 		Email:    userReq.Email,
 		Password: userReq.Password,
 	}

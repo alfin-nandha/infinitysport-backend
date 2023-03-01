@@ -2,7 +2,7 @@ package business
 
 import (
 	"fmt"
-	"project/e-comerce/features/users"
+	Users "project/e-comerce/features/users"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,16 +11,16 @@ import (
 //mock data success case
 type mockUserData struct{}
 
-func (mock mockUserData) SelectData(limit, offset int) (data []users.Core, err error) {
-	return []users.Core{
+func (mock mockUserData) SelectData(limit, offset int) (data []Users.Core, err error) {
+	return []Users.Core{
 		{ID: 1, Name: "alta", Email: "alta@mail.id", Password: "qwerty"},
 	}, nil
 }
-func (mock mockUserData) SelectDataById(id int) (data users.Core, err error) {
-	return users.Core{ID: 1, Name: "alta", Email: "alta@mail.id", Password: "qwerty"}, nil
+func (mock mockUserData) SelectDataById(id int) (data Users.Core, err error) {
+	return Users.Core{ID: 1, Name: "alta", Email: "alta@mail.id", Password: "qwerty"}, nil
 }
 
-func (mock mockUserData) InsertData(data users.Core) (row int, err error) {
+func (mock mockUserData) InsertData(data Users.Core) (row int, err error) {
 	return 1, nil
 }
 
@@ -35,15 +35,15 @@ func (mock mockUserData) UpdateData(data map[string]interface{}, id int) (row in
 //mock data failed case
 type mockUserDataFailed struct{}
 
-func (mock mockUserDataFailed) SelectData(limit, offset int) (data []users.Core, err error) {
+func (mock mockUserDataFailed) SelectData(limit, offset int) (data []Users.Core, err error) {
 	return nil, fmt.Errorf("Failed to select data")
 }
 
-func (mock mockUserDataFailed) SelectDataById(id int) (data users.Core, err error) {
-	return users.Core{}, fmt.Errorf("Failed to select data")
+func (mock mockUserDataFailed) SelectDataById(id int) (data Users.Core, err error) {
+	return Users.Core{}, fmt.Errorf("Failed to select data")
 }
 
-func (mock mockUserDataFailed) InsertData(data users.Core) (row int, err error) {
+func (mock mockUserDataFailed) InsertData(data Users.Core) (row int, err error) {
 	return 0, fmt.Errorf("failed to insert data ")
 }
 
@@ -95,7 +95,7 @@ func TestGetDataById(t *testing.T) {
 func TestInsertData(t *testing.T) {
 	t.Run("Test Insert Data Success", func(t *testing.T) {
 		userBusiness := NewUserBusiness(mockUserData{})
-		newUser := users.Core{
+		newUser := Users.Core{
 			Name:     "alta",
 			Email:    "alta@mail.id",
 			Password: "qwerty",
@@ -107,7 +107,7 @@ func TestInsertData(t *testing.T) {
 
 	t.Run("Test Insert Data Failed", func(t *testing.T) {
 		userBusiness := NewUserBusiness(mockUserDataFailed{})
-		newUser := users.Core{
+		newUser := Users.Core{
 			Name:     "alta",
 			Email:    "alta@mail.id",
 			Password: "qwerty",
@@ -119,7 +119,7 @@ func TestInsertData(t *testing.T) {
 
 	t.Run("Test Insert Data Failed When Email Empty", func(t *testing.T) {
 		userBusiness := NewUserBusiness(mockUserDataFailed{})
-		newUser := users.Core{
+		newUser := Users.Core{
 			Name:     "alta",
 			Password: "qwerty",
 		}
@@ -130,7 +130,7 @@ func TestInsertData(t *testing.T) {
 
 	t.Run("Test Insert Data Failed When Password Empty", func(t *testing.T) {
 		userBusiness := NewUserBusiness(mockUserDataFailed{})
-		newUser := users.Core{
+		newUser := Users.Core{
 			Name:  "alta",
 			Email: "alta@mail.id",
 		}
@@ -160,7 +160,7 @@ func TestDeleteData(t *testing.T) {
 func TestUpdateData(t *testing.T) {
 	t.Run("Test Update Data", func(t *testing.T) {
 		id := 1
-		data := users.Core{
+		data := Users.Core{
 			Name:     "Zaki",
 			Email:    "mail@mail.id",
 			Password: "Mail@",
@@ -172,7 +172,7 @@ func TestUpdateData(t *testing.T) {
 	})
 	t.Run("Test Update Data Failed No data", func(t *testing.T) {
 		id := 3
-		data := users.Core{
+		data := Users.Core{
 			Name:     "Zaki",
 			Email:    "mail@mail.id",
 			Password: "Mail@",

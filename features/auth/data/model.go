@@ -1,7 +1,7 @@
 package data
 
 import (
-	"project/e-comerce/features/auth"
+	Auth "project/e-comerce/features/auth"
 
 	"gorm.io/gorm"
 )
@@ -13,22 +13,13 @@ type User struct {
 	Password string
 }
 
-//DTO
-
-func (data *User) toCore() auth.Core {
-	return auth.Core{
+func (data *User) toCore() Auth.Core {
+	return Auth.Core{
 		ID:        int(data.ID),
 		Name:      data.Name,
 		Email:     data.Email,
 		Password:  data.Password,
 		CreatedAt: data.CreatedAt,
 		UpdatedAt: data.UpdatedAt,
-	}
-}
-
-func authCore(core auth.Core) User {
-	return User{
-		Email:    core.Email,
-		Password: core.Password,
 	}
 }

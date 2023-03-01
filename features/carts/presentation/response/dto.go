@@ -1,6 +1,6 @@
 package response
 
-import "project/e-comerce/features/carts"
+import Carts "project/e-comerce/features/carts"
 
 type Cart struct {
 	ID          int    `json:"id" form:"id"`
@@ -11,7 +11,7 @@ type Cart struct {
 	Qty         int    `json:"quantity" form:"quantity"`
 }
 
-func FromCore(data carts.Core) Cart {
+func FromCore(data Carts.Core) Cart {
 	return Cart{
 		ID:          data.ID,
 		UserID:      data.UserID,
@@ -22,7 +22,7 @@ func FromCore(data carts.Core) Cart {
 	}
 }
 
-func FromCoreList(data []carts.Core) []Cart {
+func FromCoreList(data []Carts.Core) []Cart {
 	result := []Cart{}
 	for key := range data {
 		result = append(result, FromCore(data[key]))

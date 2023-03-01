@@ -1,57 +1,58 @@
 package factory
 
 import (
-	_userBusiness "project/e-comerce/features/users/business"
-	_userData "project/e-comerce/features/users/data"
-	_userPresentation "project/e-comerce/features/users/presentation"
+	UserBusiness "project/e-comerce/features/users/business"
+	UserData "project/e-comerce/features/users/data"
+	UserPresentation "project/e-comerce/features/users/presentation"
 
-	_authBusiness "project/e-comerce/features/auth/business"
-	_authData "project/e-comerce/features/auth/data"
-	_authPresentation "project/e-comerce/features/auth/presentation"
+	AuthBusiness "project/e-comerce/features/auth/business"
+	AuthData "project/e-comerce/features/auth/data"
+	AuthPresentation "project/e-comerce/features/auth/presentation"
 
-	_productBusiness "project/e-comerce/features/products/bussiness"
-	_productData "project/e-comerce/features/products/data"
-	_productPresentation "project/e-comerce/features/products/presentation"
+	ProductBusiness "project/e-comerce/features/products/bussiness"
+	ProductData "project/e-comerce/features/products/data"
+	ProductPresentation "project/e-comerce/features/products/presentation"
 
-	_cartBusiness "project/e-comerce/features/carts/business"
-	_cartData "project/e-comerce/features/carts/data"
-	_cartPresentation "project/e-comerce/features/carts/presentation"
-	_orderBusiness "project/e-comerce/features/orders/bussiness"
-	_orderData "project/e-comerce/features/orders/data"
-	_orderPresentation "project/e-comerce/features/orders/presentation"
+	CartBusiness "project/e-comerce/features/carts/business"
+	CartData "project/e-comerce/features/carts/data"
+	CartPresentation "project/e-comerce/features/carts/presentation"
+
+	OrderBusiness "project/e-comerce/features/orders/bussiness"
+	OrderData "project/e-comerce/features/orders/data"
+	OrderPresentation "project/e-comerce/features/orders/presentation"
 
 	"gorm.io/gorm"
 )
 
 type Presenter struct {
-	UserPresenter    *_userPresentation.UserHandler
-	AuthPresenter    *_authPresentation.AuthHandler
-	ProductPresenter *_productPresentation.ProductHandler
-	OrderPresenter   *_orderPresentation.OrderHandler
-	CartPresenter    *_cartPresentation.CartHandler
+	UserPresenter    *UserPresentation.UserHandler
+	AuthPresenter    *AuthPresentation.AuthHandler
+	ProductPresenter *ProductPresentation.ProductHandler
+	OrderPresenter   *OrderPresentation.OrderHandler
+	CartPresenter    *CartPresentation.CartHandler
 }
 
 func InitFactory(dbConn *gorm.DB) Presenter {
 
-	userData := _userData.NewUserRepository(dbConn)
-	userBusiness := _userBusiness.NewUserBusiness(userData)
-	userPresentation := _userPresentation.NewUserHandler(userBusiness)
+	userData := UserData.NewUserRepository(dbConn)
+	userBusiness := UserBusiness.NewUserBusiness(userData)
+	userPresentation := UserPresentation.NewUserHandler(userBusiness)
 
-	authData := _authData.NewAuthRepository(dbConn)
-	authBusiness := _authBusiness.NewAuthBusiness(authData)
-	authPresentation := _authPresentation.NewAuthHandler(authBusiness)
+	authData := AuthData.NewAuthRepository(dbConn)
+	authBusiness := AuthBusiness.NewAuthBusiness(authData)
+	authPresentation := AuthPresentation.NewAuthHandler(authBusiness)
 
-	productData := _productData.NewProductRepository(dbConn)
-	productBusiness := _productBusiness.NewProductBusiness(productData)
-	productPresentation := _productPresentation.NewProductHandler(productBusiness)
+	productData := ProductData.NewProductRepository(dbConn)
+	productBusiness := ProductBusiness.NewProductBusiness(productData)
+	productPresentation := ProductPresentation.NewProductHandler(productBusiness)
 
-	cartData := _cartData.NewCartRepository(dbConn)
-	cartBusiness := _cartBusiness.NewCartBusiness(cartData)
-	cartPresentation := _cartPresentation.NewCartHandler(cartBusiness)
+	cartData := CartData.NewCartRepository(dbConn)
+	cartBusiness := CartBusiness.NewCartBusiness(cartData)
+	cartPresentation := CartPresentation.NewCartHandler(cartBusiness)
 
-	orderData := _orderData.NewOrderRepository(dbConn)
-	orderBusiness := _orderBusiness.NewOrderBusiness(orderData, cartData)
-	orderPresentation := _orderPresentation.NewOrderHandler(orderBusiness)
+	orderData := OrderData.NewOrderRepository(dbConn)
+	orderBusiness := OrderBusiness.NewOrderBusiness(orderData, cartData)
+	orderPresentation := OrderPresentation.NewOrderHandler(orderBusiness)
 
 	return Presenter{
 		UserPresenter:    userPresentation,

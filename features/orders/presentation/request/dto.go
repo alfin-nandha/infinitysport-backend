@@ -1,6 +1,6 @@
 package request
 
-import "project/e-comerce/features/orders"
+import Orders "project/e-comerce/features/orders"
 
 type Order struct {
 	//Price 	int 	`form:"price" json:"price"`
@@ -20,9 +20,9 @@ type Payment struct {
 	PaymentCode string `form:"paymentcode" json:"paymentcode"`
 }
 
-func ToCore(reqData Order) orders.Core {
-	return orders.Core{
-		Address: orders.AddressCore{
+func ToCore(reqData Order) Orders.Core {
+	return Orders.Core{
+		Address: Orders.AddressCore{
 			Receiver: reqData.Address.Receiver,
 			Phone:    reqData.Address.Phone,
 			Address:  reqData.Address.Address,
@@ -30,8 +30,8 @@ func ToCore(reqData Order) orders.Core {
 	}
 }
 
-func ToPaymentCore(reqData Payment) orders.PaymentCore {
-	return orders.PaymentCore{
+func ToPaymentCore(reqData Payment) Orders.PaymentCore {
+	return Orders.PaymentCore{
 		PaymentName: reqData.PaymentName,
 		NumberCard:  reqData.NumberCard,
 		PaymentCode: reqData.PaymentCode,

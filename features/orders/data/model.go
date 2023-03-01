@@ -1,8 +1,8 @@
 package data
 
 import (
-	_mProduct "project/e-comerce/features/carts/data"
-	"project/e-comerce/features/orders"
+	CartData "project/e-comerce/features/carts/data"
+	Orders "project/e-comerce/features/orders"
 
 	"gorm.io/gorm"
 )
@@ -30,7 +30,7 @@ type Cart struct {
 	ProductID int
 	UserID    int
 	Qty       int
-	Product   _mProduct.Product
+	Product   CartData.Product
 }
 
 type Address struct {
@@ -48,15 +48,15 @@ type Payment struct {
 	orderID     int
 }
 
-func (data *Order) toCore() orders.Core {
-	return orders.Core{
+func (data *Order) toCore() Orders.Core {
+	return Orders.Core{
 		ID:        int(data.ID),
 		Price:     data.Price,
 		Status:    data.Status,
 		UserID:    data.UserID,
 		CreatedAt: data.CreatedAt,
 		AddressID: data.AddressID,
-		Address: orders.AddressCore{
+		Address: Orders.AddressCore{
 			ID:       data.Address.ID,
 			Receiver: data.Address.Receiver,
 			Phone:    data.Address.Phone,
@@ -65,16 +65,16 @@ func (data *Order) toCore() orders.Core {
 	}
 }
 
-func ToCoreList(data []Order) []orders.Core {
-	result := []orders.Core{}
+func ToCoreList(data []Order) []Orders.Core {
+	result := []Orders.Core{}
 	for key := range data {
 		result = append(result, data[key].toCore())
 	}
 	return result
 }
 
-func (data *OrderDetail) toOrderDetailCore() orders.OrderDetail {
-	return orders.OrderDetail{
+func (data *OrderDetail) toOrderDetailCore() Orders.OrderDetail {
+	return Orders.OrderDetail{
 		ID:          int(data.ID),
 		OrderID:     data.OrderID,
 		Price:       data.Price,
@@ -83,16 +83,16 @@ func (data *OrderDetail) toOrderDetailCore() orders.OrderDetail {
 	}
 }
 
-func ToOrderDetailCoreList(data []OrderDetail) []orders.OrderDetail {
-	result := []orders.OrderDetail{}
+func ToOrderDetailCoreList(data []OrderDetail) []Orders.OrderDetail {
+	result := []Orders.OrderDetail{}
 	for key := range data {
 		result = append(result, data[key].toOrderDetailCore())
 	}
 	return result
 }
 
-func (data *Cart) toOrderDetailFromCart() orders.OrderDetail {
-	return orders.OrderDetail{
+func (data *Cart) toOrderDetailFromCart() Orders.OrderDetail {
+	return Orders.OrderDetail{
 		ID:          int(data.ID),
 		Qty:         data.Qty,
 		ProductName: data.Product.Name,
@@ -100,15 +100,15 @@ func (data *Cart) toOrderDetailFromCart() orders.OrderDetail {
 	}
 }
 
-func ToOrderDetailCoreListFromCart(data []Cart) []orders.OrderDetail {
-	result := []orders.OrderDetail{}
+func ToOrderDetailCoreListFromCart(data []Cart) []Orders.OrderDetail {
+	result := []Orders.OrderDetail{}
 	for key := range data {
 		result = append(result, data[key].toOrderDetailFromCart())
 	}
 	return result
 }
 
-func fromCore(core orders.Core) Order {
+func fromCore(core Orders.Core) Order {
 	return Order{
 		AddressID: core.AddressID,
 		Price:     core.Price,
@@ -116,7 +116,7 @@ func fromCore(core orders.Core) Order {
 	}
 }
 
-func fromOrderDetailCore(orderDetailCore orders.OrderDetail) OrderDetail {
+func fromOrderDetailCore(orderDetailCore Orders.OrderDetail) OrderDetail {
 	return OrderDetail{
 		ProductName: orderDetailCore.ProductName,
 		Price:       orderDetailCore.Price,
@@ -125,7 +125,7 @@ func fromOrderDetailCore(orderDetailCore orders.OrderDetail) OrderDetail {
 	}
 }
 
-func fromOrderDetailCoreList(data []orders.OrderDetail) []OrderDetail {
+func fromOrderDetailCoreList(data []Orders.OrderDetail) []OrderDetail {
 	result := []OrderDetail{}
 	for key := range data {
 		result = append(result, fromOrderDetailCore(data[key]))
@@ -133,7 +133,7 @@ func fromOrderDetailCoreList(data []orders.OrderDetail) []OrderDetail {
 	return result
 }
 
-func fromAddressCore(addressCore orders.AddressCore) Address {
+func fromAddressCore(addressCore Orders.AddressCore) Address {
 	return Address{
 		Receiver: addressCore.Receiver,
 		Phone:    addressCore.Phone,
@@ -141,7 +141,7 @@ func fromAddressCore(addressCore orders.AddressCore) Address {
 	}
 }
 
-func fromPaymentCore(paymentCore orders.PaymentCore) Payment {
+func fromPaymentCore(paymentCore Orders.PaymentCore) Payment {
 	return Payment{
 		NumberCard:  paymentCore.NumberCard,
 		PaymentCode: paymentCore.PaymentCode,

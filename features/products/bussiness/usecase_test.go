@@ -2,7 +2,7 @@ package bussiness
 
 import (
 	"fmt"
-	"project/e-comerce/features/products"
+	Products "project/e-comerce/features/products"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,18 +11,18 @@ import (
 //mock data success case
 type mockProductDataSucces struct{}
 
-func (mock mockProductDataSucces) SelectData() (data []products.Core, err error) {
-	return []products.Core{
+func (mock mockProductDataSucces) SelectData() (data []Products.Core, err error) {
+	return []Products.Core{
 		{ID: 1, Name: "sepatu baru", ProductDetail: "ini sepatu baru", Price: 10000, Stock: 10, PhotoUrl: "example.com", Photo: "ini foto", UserID: 1},
 		{ID: 1, Name: "sepatu lama", ProductDetail: "ini sepatu lama", Price: 1000, Stock: 10, PhotoUrl: "example.com", Photo: "ini foto", UserID: 1},
 	}, nil
 }
 
-func (mock mockProductDataSucces) SelectDataByID(id int) (data products.Core, err error) {
-	return products.Core{ID: 1, Name: "sepatu baru", ProductDetail: "ini sepatu baru", Price: 10000, Stock: 10, PhotoUrl: "example.com", Photo: "ini foto", UserID: 1}, nil
+func (mock mockProductDataSucces) SelectDataByID(id int) (data Products.Core, err error) {
+	return Products.Core{ID: 1, Name: "sepatu baru", ProductDetail: "ini sepatu baru", Price: 10000, Stock: 10, PhotoUrl: "example.com", Photo: "ini foto", UserID: 1}, nil
 }
 
-func (mock mockProductDataSucces) InsertData(data products.Core) (err error) {
+func (mock mockProductDataSucces) InsertData(data Products.Core) (err error) {
 	return nil
 }
 
@@ -34,8 +34,8 @@ func (mock mockProductDataSucces) UpdateDataByID(dataReq map[string]interface{},
 	return nil
 }
 
-func (mock mockProductDataSucces) SelectDataByUserID(userId int) (data []products.Core, err error) {
-	return []products.Core{
+func (mock mockProductDataSucces) SelectDataByUserID(userId int) (data []Products.Core, err error) {
+	return []Products.Core{
 		{ID: 1, Name: "sepatu baru", ProductDetail: "ini sepatu baru", Price: 10000, Stock: 10, PhotoUrl: "example.com", Photo: "ini foto", UserID: 1},
 		{ID: 1, Name: "sepatu lama", ProductDetail: "ini sepatu lama", Price: 1000, Stock: 10, PhotoUrl: "example.com", Photo: "ini foto", UserID: 1},
 	}, nil
@@ -44,15 +44,15 @@ func (mock mockProductDataSucces) SelectDataByUserID(userId int) (data []product
 //mock data failed case
 type mockProductDataFailed struct{}
 
-func (mock mockProductDataFailed) SelectData() (data []products.Core, err error) {
+func (mock mockProductDataFailed) SelectData() (data []Products.Core, err error) {
 	return nil, fmt.Errorf("Failed to select data")
 }
 
-func (mock mockProductDataFailed) SelectDataByID(id int) (data products.Core, err error) {
+func (mock mockProductDataFailed) SelectDataByID(id int) (data Products.Core, err error) {
 	return data, fmt.Errorf("Failed to select data")
 }
 
-func (mock mockProductDataFailed) InsertData(data products.Core) (err error) {
+func (mock mockProductDataFailed) InsertData(data Products.Core) (err error) {
 	return fmt.Errorf("failed to insert data ")
 }
 
@@ -64,7 +64,7 @@ func (mock mockProductDataFailed) UpdateDataByID(dataReq map[string]interface{},
 	return fmt.Errorf("failed to insert data ")
 }
 
-func (mock mockProductDataFailed) SelectDataByUserID(userId int) (data []products.Core, err error) {
+func (mock mockProductDataFailed) SelectDataByUserID(userId int) (data []Products.Core, err error) {
 	return nil, fmt.Errorf("failed to select data ")
 }
 
@@ -106,7 +106,7 @@ func TestGetProductByID(t *testing.T) {
 func TestInsertProduct(t *testing.T) {
 	t.Run("Test Insert Data Success", func(t *testing.T) {
 		productBusiness := NewProductBusiness(mockProductDataSucces{})
-		newProduct := products.Core{
+		newProduct := Products.Core{
 			Name: "sepatu baru", ProductDetail: "ini sepatu baru", Price: 10000, Stock: 10, PhotoUrl: "example.com", Photo: "ini foto", UserID: 1,
 		}
 		err := productBusiness.InsertProduct(newProduct)
@@ -115,7 +115,7 @@ func TestInsertProduct(t *testing.T) {
 
 	t.Run("Test Insert Data Failed", func(t *testing.T) {
 		productBusiness := NewProductBusiness(mockProductDataFailed{})
-		newProduct := products.Core{
+		newProduct := Products.Core{
 			Name: "alta",
 		}
 		err := productBusiness.InsertProduct(newProduct)
@@ -165,7 +165,7 @@ func TestUpdateProduct(t *testing.T) {
 		productBusiness := NewProductBusiness(mockProductDataSucces{})
 		id := 1
 		userid := 1
-		newProduct := products.Core{
+		newProduct := Products.Core{
 			Name: "sepatu baru", ProductDetail: "ini sepatu baru", Price: 10000, Stock: 10,
 		}
 		err := productBusiness.UpdateProductByID(newProduct, id, userid)
@@ -176,7 +176,7 @@ func TestUpdateProduct(t *testing.T) {
 		id := 1
 		userid := 0
 		productBusiness := NewProductBusiness(mockProductDataFailed{})
-		newProduct := products.Core{
+		newProduct := Products.Core{
 			Name: "septau",
 		}
 		err := productBusiness.UpdateProductByID(newProduct, id, userid)

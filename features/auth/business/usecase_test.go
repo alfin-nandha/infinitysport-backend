@@ -2,7 +2,7 @@ package business
 
 import (
 	"errors"
-	"project/e-comerce/features/auth"
+	Auth "project/e-comerce/features/auth"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,20 +10,20 @@ import (
 
 type mockAuthDataSucsess struct{}
 
-func (mock mockAuthDataSucsess) FindUser(email string) (resp auth.Core, err error) {
-	return auth.Core{ID: 1, Name: "alta", Email: "alta@mail.id", Password: "$2a$10$2iESuHQMd8NM2q245RP40esJCpID8o/SyfLiNI2.mHGoGEojEoUe."}, nil
+func (mock mockAuthDataSucsess) FindUser(email string) (resp Auth.Core, err error) {
+	return Auth.Core{ID: 1, Name: "alta", Email: "alta@mail.id", Password: "$2a$10$2iESuHQMd8NM2q245RP40esJCpID8o/SyfLiNI2.mHGoGEojEoUe."}, nil
 }
 
 type mockAuthDataFailed struct{}
 
-func (mock mockAuthDataFailed) FindUser(email string) (resp auth.Core, err error) {
-	return auth.Core{}, errors.New("user not found")
+func (mock mockAuthDataFailed) FindUser(email string) (resp Auth.Core, err error) {
+	return Auth.Core{}, errors.New("user not found")
 }
 
 func TestLogin(t *testing.T) {
 	t.Run("Test Login Success", func(t *testing.T) {
 		authBusiness := NewAuthBusiness(mockAuthDataSucsess{})
-		newUser := auth.Core{
+		newUser := Auth.Core{
 			Name:     "alta",
 			Email:    "alta@mail.id",
 			Password: "123",
@@ -36,7 +36,7 @@ func TestLogin(t *testing.T) {
 
 	t.Run("Test Login email not found", func(t *testing.T) {
 		authBusiness := NewAuthBusiness(mockAuthDataFailed{})
-		newUser := auth.Core{
+		newUser := Auth.Core{
 			Name:     "alta",
 			Email:    "abc@mail.id",
 			Password: "qwerty",
@@ -49,7 +49,7 @@ func TestLogin(t *testing.T) {
 
 	t.Run("Test Login Wrong Pass", func(t *testing.T) {
 		authBusiness := NewAuthBusiness(mockAuthDataFailed{})
-		newUser := auth.Core{
+		newUser := Auth.Core{
 			Name:     "alta",
 			Email:    "alta@mail.id",
 			Password: "qwerty",

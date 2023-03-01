@@ -2,7 +2,7 @@ package data
 
 import (
 	"errors"
-	"project/e-comerce/features/carts"
+	Carts "project/e-comerce/features/carts"
 
 	"gorm.io/gorm"
 )
@@ -11,7 +11,7 @@ type mysqlCartRepository struct {
 	db *gorm.DB
 }
 
-func NewCartRepository(conn *gorm.DB) carts.Data {
+func NewCartRepository(conn *gorm.DB) Carts.Data {
 	return &mysqlCartRepository{
 		db: conn,
 	}
@@ -27,17 +27,17 @@ func (repo *mysqlCartRepository) CheckProductInCart(UserId int, IdProduct int) (
 	return true, int(data.ID), data.Qty, nil
 }
 
-func (repo *mysqlCartRepository) SelectData(UserId int) ([]carts.Core, error) {
+func (repo *mysqlCartRepository) SelectData(UserId int) ([]Carts.Core, error) {
 	var data []Cart
 
 	result := repo.db.Where("user_id = ?", UserId).Preload("Product").Find(&data)
 	if result.Error != nil {
-		return []carts.Core{}, result.Error
+		return []Carts.Core{}, result.Error
 	}
 	return ToCoreList(data), nil
 }
 
-func (repo *mysqlCartRepository) InsertData(cart carts.Core) (int, error) {
+func (repo *mysqlCartRepository) InsertData(cart Carts.Core) (int, error) {
 	Cart := fromCore(cart)
 	result := repo.db.Create(&Cart)
 	if result.Error != nil {

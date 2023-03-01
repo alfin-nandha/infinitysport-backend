@@ -2,32 +2,32 @@ package business
 
 import (
 	"errors"
-	"project/e-comerce/features/users"
+	Users "project/e-comerce/features/users"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
 type userUseCase struct {
-	userData users.Data
+	userData Users.Data
 }
 
-func NewUserBusiness(usrData users.Data) users.Business {
+func NewUserBusiness(usrData Users.Data) Users.Business {
 	return &userUseCase{
 		userData: usrData,
 	}
 }
 
-func (uc *userUseCase) GetAllData(limit, offset int) (response []users.Core, err error) {
+func (uc *userUseCase) GetAllData(limit, offset int) (response []Users.Core, err error) {
 	resp, errData := uc.userData.SelectData(limit, offset)
 	return resp, errData
 }
 
-func (uc *userUseCase) GetDataById(id int) (response users.Core, err error) {
+func (uc *userUseCase) GetDataById(id int) (response Users.Core, err error) {
 	resp, errData := uc.userData.SelectDataById(id)
 	return resp, errData
 }
 
-func (uc *userUseCase) InsertData(userRequest users.Core) (row int, err error) {
+func (uc *userUseCase) InsertData(userRequest Users.Core) (row int, err error) {
 
 	if userRequest.Name == "" || userRequest.Email == "" || userRequest.Password == "" {
 		return -1, errors.New("all data must be filled")
@@ -54,7 +54,7 @@ func (uc *userUseCase) DeleteData(id int) (row int, err error) {
 	return result, err
 }
 
-func (uc *userUseCase) UpdateData(userReq users.Core, id int) (row int, err error) {
+func (uc *userUseCase) UpdateData(userReq Users.Core, id int) (row int, err error) {
 	updateMap := make(map[string]interface{})
 	if userReq.Name != "" {
 		updateMap["name"] = &userReq.Name

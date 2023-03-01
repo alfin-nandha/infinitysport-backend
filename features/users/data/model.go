@@ -1,7 +1,7 @@
 package data
 
 import (
-	"project/e-comerce/features/users"
+	Users "project/e-comerce/features/users"
 
 	"gorm.io/gorm"
 )
@@ -15,8 +15,8 @@ type User struct {
 
 //DTO
 
-func (data *User) toCore() users.Core {
-	return users.Core{
+func (data *User) toCore() Users.Core {
+	return Users.Core{
 		ID:        int(data.ID),
 		Name:      data.Name,
 		Email:     data.Email,
@@ -27,15 +27,15 @@ func (data *User) toCore() users.Core {
 
 }
 
-func toCoreList(data []User) []users.Core {
-	result := []users.Core{}
+func toCoreList(data []User) []Users.Core {
+	result := []Users.Core{}
 	for key := range data {
 		result = append(result, data[key].toCore())
 	}
 	return result
 }
 
-func fromCore(core users.Core) User {
+func fromCore(core Users.Core) User {
 	return User{
 		Name:     core.Name,
 		Email:    core.Email,
@@ -43,6 +43,6 @@ func fromCore(core users.Core) User {
 	}
 }
 
-func toCore(data User) users.Core {
+func toCore(data User) Users.Core {
 	return data.toCore()
 }

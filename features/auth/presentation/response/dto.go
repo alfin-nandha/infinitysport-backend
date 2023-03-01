@@ -1,7 +1,7 @@
 package response
 
 import (
-	"project/e-comerce/features/users"
+	Users "project/e-comerce/features/users"
 )
 
 type user struct {
@@ -11,7 +11,7 @@ type user struct {
 	Password string `json:"password" form:"password"`
 }
 
-func FromCore(data users.Core) user {
+func FromCore(data Users.Core) user {
 	return user{
 		ID:       data.ID,
 		Name:     data.Name,
